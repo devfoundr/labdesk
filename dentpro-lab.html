@@ -1338,6 +1338,17 @@ function showWorkDrop(){
 }
 function renderDrop(drop,items){
   if(!items.length){drop.innerHTML='<div style="padding:12px;font-size:13px;color:var(--t3);text-align:center">Ничего не найдено</div>';return;}
+  // Сортируем: по категории (по минимальному артикулу категории), внутри — по артикулу
+  var catMinArt={};
+  items.forEach(function(w){
+    var a=w.art||'\uffff';
+    if(catMinArt[w.cat]===undefined || a<catMinArt[w.cat]) catMinArt[w.cat]=a;
+  });
+  items=items.slice().sort(function(a,b){
+    var ca=catMinArt[a.cat]||'\uffff', cb=catMinArt[b.cat]||'\uffff';
+    if(ca!==cb) return ca<cb?-1:1;          // категории по их минимальному артикулу
+    return (a.art||'').localeCompare(b.art||''); // внутри категории по артикулу
+  });
   var lastCat='',html='';
   items.forEach(function(w){
     var picked=_pickedWorks.find(function(p){return p.art===w.art;});
@@ -3537,7 +3548,7 @@ window.saveLabOrder = async function(){
     try {
       var mainArt = mainWork.art || (works[0] && works[0].article);
       var mainWorkObj = (window._allWorks||[]).find(function(x){return x.art===mainArt;});
-      var cat = mainWorkObj && mainWorkObj.category;
+      var cat = mainWorkObj && (mainWorkObj.cat || mainWorkObj.category);
       if(cat){
         var tplStages = null;
         // Берём из кэша если есть
