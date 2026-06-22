@@ -371,8 +371,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
     <div class="ni" id="ni-acts" onclick="goTo('acts',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Акты</div>
     <div class="ni" id="ni-sal" onclick="goTo('sal',this)"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Зарплата</div>
     <div class="ni" id="ni-an" onclick="goTo('an',this)"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Аналитика</div>
-    <div class="ns">Справочники</div>
-    <div class="ni" id="ni-ref" onclick="goTo('ref',this)"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Справочники</div>
+    <div class="ns">Настройки</div>
     <div class="ni" id="ni-tpl" onclick="goTo('tpl',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>Шаблоны этапов</div>
     <div class="ni" id="ni-cl" onclick="goTo('cl',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Клиники</div>
     <div class="ni" id="ni-settings" onclick="goTo('settings',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Реквизиты</div>
@@ -435,10 +434,10 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 <!-- ORDERS LIST -->
 <div class="scr" id="scr-ord">
   <div class="st st4">
-    <div class="sc"><div class="sc-l">Всего активных</div><div class="sc-v" id="ord-st-active">—</div></div>
-    <div class="sc dng"><div class="sc-l">Просрочено</div><div class="sc-v" id="ord-st-overdue">—</div></div>
-    <div class="sc wrn"><div class="sc-l">Переделки</div><div class="sc-v" id="ord-st-returned">—</div></div>
-    <div class="sc"><div class="sc-l">Новых от клиник</div><div class="sc-v" id="ord-st-new">—</div></div>
+    <div class="sc"><div class="sc-l">Всего активных</div><div class="sc-v">14</div></div>
+    <div class="sc dng"><div class="sc-l">Просрочено</div><div class="sc-v">2</div></div>
+    <div class="sc wrn"><div class="sc-l">Переделки</div><div class="sc-v">1</div></div>
+    <div class="sc"><div class="sc-l">Новых от клиник</div><div class="sc-v">1</div></div>
   </div>
   <div class="tc">
     <div class="ttb"><div class="ttb-t" id="orders-title">Все заказы</div>
@@ -473,10 +472,10 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
       <!-- header -->
       <div class="pn"><div class="pb">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:13px">
-          <div><div id="od-meta" style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:3px">—</div>
-          <div id="od-title" style="font-size:18px;font-weight:700;letter-spacing:-.4px">Загрузка заказа...</div></div>
+          <div><div id="od-meta" style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:3px">#1043 · СтомаКлиник · Врач: Смирнова О.П.</div>
+          <div id="od-title" style="font-size:18px;font-weight:700;letter-spacing:-.4px">Виниры E-max ×4 — Козлов И.П.</div></div>
           <div style="display:flex;gap:6px;align-items:center">
-            <span id="od-status-badge" class="badge">—</span>
+            <span id="od-status-badge" class="badge br">Переделка</span>
             <button class="btn btn-sm btn-g" onclick="printNariad()" style="margin-left:4px">
               <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
               Печать наряда
@@ -484,10 +483,10 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
           </div>
         </div>
         <div class="mg">
-          <div class="mf"><label>Клиника</label><span id="od-clinic">—</span></div>
-          <div class="mf"><label>Врач</label><span id="od-doctor">—</span></div>
-          <div class="mf"><label>Пациент</label><span id="od-patient">—</span></div>
-          <div class="mf"><label>Работа</label><span id="od-work">—</span></div>
+          <div class="mf"><label>Клиника</label><span id="od-clinic">СтомаКлиник</span></div>
+          <div class="mf"><label>Врач</label><span id="od-doctor">Смирнова О.П. · +7 916 111-22-33</span></div>
+          <div class="mf"><label>Пациент</label><span id="od-patient">Козлов Иван Петрович</span></div>
+          <div class="mf"><label>Работа</label><span id="od-work">Виниры E-max ×4</span></div>
           <div class="mf"><label>Имплант / Цвет</label><span id="od-material">—</span></div>
           <div class="mf mf-hl"><label>Дата сдачи</label><span id="od-due">—</span></div>
           <div class="mf"><label>Дата примерки</label><span id="od-fitting">—</span></div>
@@ -939,66 +938,19 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
   </div>
 </div>
 
-<!-- СПРАВОЧНИКИ -->
-<div class="scr" id="scr-ref">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-
-    <!-- Виды работ -->
-    <div class="pn">
-      <div class="ph">
-        <div class="ph-t">🦷 Виды работ</div>
-        <button class="btn btn-sm btn-p" onclick="addWorkType()">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить
-        </button>
-      </div>
-      <div class="pb" style="display:flex;flex-direction:column;gap:6px" id="work-types-list">
-        <div class="ref-item"><div class="ref-item-name">Металлокерамика (МК)</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать МК')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">E-max (IPS e.max Press)</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">ZrO2 — цирконий</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">Бюгельный протез</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">Съёмный протез</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-      </div>
-    </div>
-
-    <!-- Банк этапов -->
-    <div class="pn">
-      <div class="ph">
-        <div class="ph-t">📋 Банк этапов / операций</div>
-        <button class="btn btn-sm btn-p" onclick="openAddStageBank()">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить
-        </button>
-      </div>
-      <div class="pb" style="display:flex;flex-direction:column;gap:6px" id="stages-bank-list">
-        <div style="text-align:center;color:var(--t3);font-size:12px;padding:16px">Загрузка...</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: ADD STAGE BANK -->
-<div class="mo" id="mo-bank" onclick="if(event.target===this)cM('mo-bank')">
-  <div class="md">
-    <div class="mh2"><div class="mh2-t">Добавить этап в банк</div><button class="mcl" onclick="cM('mo-bank')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="mbody">
-      <div class="fd"><label>Название операции</label><input type="text" id="bank-name" placeholder="Приём слепка"></div>
-      <div class="fd"><label>Типовой срок (дни)</label><input type="number" id="bank-days" value="1" min="1"></div>
-    </div>
-    <div class="mfoo">
-      <button class="btn btn-g" onclick="cM('mo-bank')">Отмена</button>
-      <button class="btn btn-p" id="btn-save-bank" onclick="saveStageBank()">Добавить</button>
-    </div>
-  </div>
-</div>
-
 <!-- ШАБЛОНЫ ЭТАПОВ -->
 <div class="scr" id="scr-tpl">
   <div style="display:grid;grid-template-columns:260px 1fr;gap:14px">
 
-    <!-- Список видов работ (категории прайса) -->
+    <!-- Список видов работ -->
     <div class="pn" style="align-self:start">
       <div class="ph"><div class="ph-t">Вид работы</div></div>
-      <div class="pb" style="display:flex;flex-direction:column;gap:4px" id="tpl-categories">
-        <div style="font-size:12px;color:var(--t3);text-align:center;padding:16px">Загрузка...</div>
+      <div class="pb" style="display:flex;flex-direction:column;gap:4px">
+        <div class="tpl-wt active-wt" id="wt-mk" onclick="loadTpl('МК',this)">Металлокерамика (МК)</div>
+        <div class="tpl-wt" id="wt-emax" onclick="loadTpl('E-max',this)">E-max (IPS e.max Press)</div>
+        <div class="tpl-wt" id="wt-zr" onclick="loadTpl('ZrO2',this)">ZrO2 — цирконий</div>
+        <div class="tpl-wt" id="wt-bug" onclick="loadTpl('Бюгель',this)">Бюгельный протез</div>
+        <div class="tpl-wt" id="wt-snem" onclick="loadTpl('Съёмный',this)">Съёмный протез</div>
       </div>
     </div>
 
@@ -1007,14 +959,14 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
       <div class="pn">
         <div class="ph">
           <div>
-            <div class="ph-t" id="tpl-title">Шаблон: —</div>
+            <div class="ph-t" id="tpl-title">Шаблон: Металлокерамика (МК)</div>
             <div style="font-size:11px;color:var(--t3);margin-top:2px">Перетащите этапы для изменения порядка · Срок в рабочих днях</div>
           </div>
           <div style="display:flex;gap:6px">
             <button class="btn btn-sm btn-g" onclick="addStageToTpl()">
               <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить этап
             </button>
-            <button class="btn btn-sm btn-p" onclick="saveTplToFirestore()">
+            <button class="btn btn-sm btn-p" onclick="showToast('Шаблон сохранён')">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Сохранить
             </button>
           </div>
@@ -1260,7 +1212,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 </div><!-- /layout -->
 <script>
 // ── Navigation ──
-var PM={db:'Дашборд',ord:'Заказы / Наряды',order:'Заказ',pr:'Прайс услуг',tech:'Техники',sch:'График работы',sal:'Зарплата',an:'Аналитика',acts:'Акты выполненных работ',ref:'Справочники',tpl:'Шаблоны этапов',cl:'Клиники',settings:'Реквизиты лаборатории'};
+var PM={db:'Дашборд',ord:'Заказы / Наряды',order:'Заказ',pr:'Прайс услуг',tech:'Техники',sch:'График работы',sal:'Зарплата',an:'Аналитика',acts:'Акты выполненных работ',tpl:'Шаблоны этапов',cl:'Клиники',settings:'Реквизиты лаборатории'};
 function goTo(n,el){
   document.querySelectorAll('.scr').forEach(s=>s.classList.remove('a'));
   document.querySelectorAll('.ni').forEach(i=>i.classList.remove('a'));
@@ -1269,7 +1221,6 @@ function goTo(n,el){
   document.getElementById('page-title').textContent=PM[n]||n;
   if(n==='order'){setTimeout(sCB,80);setTimeout(drawAllBridges,120);setTimeout(renderOrdStages,50);}
   if(n==='acts' && window.initActsScreen){setTimeout(window.initActsScreen,50);}
-  if(n==='tpl' && window.loadTplCategories){setTimeout(window.loadTplCategories,50);}
   if(n==='settings' && window.loadLabRequisites){setTimeout(window.loadLabRequisites,50);}
 }
 function openOrdDet(){goTo('order',null);document.getElementById('ni-ord').classList.add('a');setTimeout(renderOrdStages,50);}
@@ -1338,17 +1289,6 @@ function showWorkDrop(){
 }
 function renderDrop(drop,items){
   if(!items.length){drop.innerHTML='<div style="padding:12px;font-size:13px;color:var(--t3);text-align:center">Ничего не найдено</div>';return;}
-  // Сортируем: по категории (по минимальному артикулу категории), внутри — по артикулу
-  var catMinArt={};
-  items.forEach(function(w){
-    var a=w.art||'\uffff';
-    if(catMinArt[w.cat]===undefined || a<catMinArt[w.cat]) catMinArt[w.cat]=a;
-  });
-  items=items.slice().sort(function(a,b){
-    var ca=catMinArt[a.cat]||'\uffff', cb=catMinArt[b.cat]||'\uffff';
-    if(ca!==cb) return ca<cb?-1:1;          // категории по их минимальному артикулу
-    return (a.art||'').localeCompare(b.art||''); // внутри категории по артикулу
-  });
   var lastCat='',html='';
   items.forEach(function(w){
     var picked=_pickedWorks.find(function(p){return p.art===w.art;});
@@ -2221,133 +2161,40 @@ var _defDays={
   'Приём слепка':1,'Отливка модели':1,'Моделировка из воска':2,'CAD/CAM моделирование':1,'CAD моделирование':1,'Литьё каркаса':2,'Обработка / посадка каркаса':1,'Нанесение керамики + глазурь':2,'Нанесение керамики':2,'Примерка / сдача работы':1,'Прессовка IPS e.max':2,'Глазурь / политура':1,'Глазурь':1,'Фрезерование (CAM)':1,'Синтеризация циркония':1,'Приём слепка / скан':1,'Дублирование модели':1,'Моделировка каркаса из воска':2,'Обработка каркаса':1,'Постановка зубов':2,'Примерка каркаса':1,'Финальная обработка':1,'Сдача работы':1,'Постановка зубов (воск)':2,'Примерка в воске':1,'Гипсовка в кювету':1,'Замена воска пластмассой':2,'Шлифовка / полировка':1
 };
 var _techs=['Иванов А.','Петрова М.','Сидоров В.'];
-var _curTpl=null;
-window._tplCache = {};
-window._tplCategories = [];
-
-function defaultStagesForCategory(cat){
-  var lc = (cat||'').toLowerCase();
-  if(lc.indexOf('металлокерам')>=0) return _tpls['МК'];
-  if(lc.indexOf('e-max')>=0 || lc.indexOf('емакс')>=0 || lc.indexOf('пресс')>=0) return _tpls['E-max'];
-  if(lc.indexOf('цирконий')>=0 || lc.indexOf('zro2')>=0 || lc.indexOf('диоксид')>=0) return _tpls['ZrO2'];
-  if(lc.indexOf('бюгель')>=0) return _tpls['Бюгель'];
-  if(lc.indexOf('съёмн')>=0 || lc.indexOf('съемн')>=0) return _tpls['Съёмный'];
-  return [];
-}
-
-window.loadTplCategories = async function(){
-  var user = window.LabDesk && window.LabDesk.currentUser;
-  var box = document.getElementById('tpl-categories');
-  if(!box) return;
-  if(!user || !user.lab_id){ box.innerHTML='<div style="font-size:12px;color:var(--t3);text-align:center;padding:16px">Нет данных пользователя</div>'; return; }
-  box.innerHTML = '<div style="font-size:12px;color:var(--t3);text-align:center;padding:16px">Загрузка...</div>';
-  try {
-    const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    var pq = query(collection(window.db,'work_types'), where('lab_id','==',user.lab_id));
-    var psnap = await getDocs(pq);
-    var catSet = {};
-    psnap.docs.forEach(function(d){ var c=d.data().category||'Без категории'; catSet[c]=true; });
-    window._tplCategories = Object.keys(catSet).sort();
-
-    window._tplCache = {};
-    try {
-      var tq = query(collection(window.db,'stage_templates'), where('lab_id','==',user.lab_id));
-      var tsnap = await getDocs(tq);
-      tsnap.docs.forEach(function(d){ var data=d.data(); window._tplCache[data.category]={id:d.id, stages:data.stages||[]}; });
-    } catch(tplErr){ console.warn('stage_templates read failed:', tplErr); }
-
-    if(window._tplCategories.length===0){
-      box.innerHTML = '<div style="font-size:12px;color:var(--t3);text-align:center;padding:16px">Сначала заполните прайс — категории появятся здесь</div>';
-      var cont0=document.getElementById('tpl-stages'); if(cont0) cont0.innerHTML='';
-      var tt=document.getElementById('tpl-title'); if(tt) tt.textContent='Шаблон: —';
-      return;
-    }
-    box.innerHTML = window._tplCategories.map(function(cat){
-      var safe = cat.replace(/"/g,'&quot;').replace(/'/g,"\\'");
-      return '<div class="tpl-wt" onclick="loadTpl(\''+safe+'\',this)">'+cat+'</div>';
-    }).join('');
-    var first = box.querySelector('.tpl-wt');
-    if(first) loadTpl(window._tplCategories[0], first);
-  } catch(e){
-    console.error('Load tpl categories error:', e);
-    box.innerHTML = '<div style="font-size:12px;color:#c00;text-align:center;padding:16px">Ошибка загрузки категорий</div>';
-  }
-};
-
-function loadTpl(cat, el){
-  _curTpl = cat;
+var _curTpl='МК';
+function loadTpl(name,el){
+  _curTpl=name;
   if(el){document.querySelectorAll('.tpl-wt').forEach(w=>w.classList.remove('active-wt'));el.classList.add('active-wt');}
-  document.getElementById('tpl-title').textContent='Шаблон: '+cat;
-  var cached = window._tplCache[cat];
-  var stages;
-  if(cached){
-    stages = cached.stages.map(function(s){ return (typeof s==='string')?{name:s,days:(_defDays[s]||1)}:{name:s.name,days:s.days||1}; });
-  } else {
-    stages = (defaultStagesForCategory(cat)||[]).map(function(name){ return {name:name, days:(_defDays[name]||1)}; });
-  }
+  document.getElementById('tpl-title').textContent='Шаблон: '+name;
+  var stages=_tpls[name]||[];
   var cont=document.getElementById('tpl-stages');
   cont.innerHTML='';
   stages.forEach(function(s,i){
+    var days=_defDays[s]||1;
+    var techOpts=_techs.map(function(t){return '<option>'+t+'</option>';}).join('');
     var row=document.createElement('div');
     row.className='tpl-stage';
     row.draggable=true;
     row.innerHTML='<div class="tpl-stage-drag">⠿</div>'
-      +'<div class="tpl-stage-name">'+(i+1)+'. '+s.name+'</div>'
-      +'<input type="number" min="1" max="30" value="'+s.days+'" title="Срок (дни)">'
+      +'<div class="tpl-stage-name">'+(i+1)+'. '+s+'</div>'
+      +'<input type="number" min="1" max="30" value="'+days+'" title="Срок (дни)">'
       +'<button class="btn btn-xs btn-g" onclick="removeStage(this)" title="Удалить"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
     addDragDrop(row);
     cont.appendChild(row);
   });
   if(stages.length===0) cont.innerHTML='<div style="font-size:13px;color:var(--t3);text-align:center;padding:20px">Нет этапов — нажмите «Добавить этап»</div>';
 }
-function removeStage(btn){btn.closest('.tpl-stage').remove();renumberStages();showToast('Этап удалён — нажмите «Сохранить»');}
+function removeStage(btn){btn.closest('.tpl-stage').remove();renumberStages();showToast('Этап удалён');}
 function renumberStages(){document.querySelectorAll('#tpl-stages .tpl-stage').forEach(function(r,i){var n=r.querySelector('.tpl-stage-name');n.textContent=(i+1)+'. '+n.textContent.replace(/^\d+\.\s/,'');});}
 function addStageToTpl(){
-  if(!_curTpl){ showToast('Сначала выберите вид работы'); return; }
   var name=prompt('Название этапа:');
   if(!name||!name.trim())return;
-  var cont=document.getElementById('tpl-stages');
-  if(cont.querySelector('div[style*="text-align:center"]')) cont.innerHTML='';
-  var i = cont.querySelectorAll('.tpl-stage').length;
-  var row=document.createElement('div');
-  row.className='tpl-stage';
-  row.draggable=true;
-  row.innerHTML='<div class="tpl-stage-drag">⠿</div>'
-    +'<div class="tpl-stage-name">'+(i+1)+'. '+name.trim()+'</div>'
-    +'<input type="number" min="1" max="30" value="1" title="Срок (дни)">'
-    +'<button class="btn btn-xs btn-g" onclick="removeStage(this)" title="Удалить"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-  addDragDrop(row);
-  cont.appendChild(row);
-  showToast('Этап добавлен — не забудьте «Сохранить»');
+  var stages=_tpls[_curTpl]||[];
+  stages.push(name.trim());
+  _tpls[_curTpl]=stages;
+  loadTpl(_curTpl);
+  showToast('Этап добавлен: '+name.trim());
 }
-window.saveTplToFirestore = async function(){
-  if(!_curTpl){ showToast('Не выбран вид работы'); return; }
-  var user = window.LabDesk && window.LabDesk.currentUser;
-  if(!user){ showToast('Нет сессии'); return; }
-  var stages = [];
-  document.querySelectorAll('#tpl-stages .tpl-stage').forEach(function(r){
-    var nm = r.querySelector('.tpl-stage-name').textContent.replace(/^\d+\.\s/,'').trim();
-    var days = parseInt(r.querySelector('input[type=number]').value,10) || 1;
-    if(nm) stages.push({name:nm, days:days});
-  });
-  try {
-    const { collection, doc, addDoc, updateDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    var cached = window._tplCache[_curTpl];
-    if(cached && cached.id){
-      await updateDoc(doc(window.db,'stage_templates',cached.id), { stages: stages, updated_at: serverTimestamp() });
-      window._tplCache[_curTpl].stages = stages;
-    } else {
-      var ref = await addDoc(collection(window.db,'stage_templates'), {
-        lab_id: user.lab_id, category: _curTpl, stages: stages, created_at: serverTimestamp(),
-      });
-      window._tplCache[_curTpl] = { id: ref.id, stages: stages };
-    }
-    showToast('✓ Шаблон сохранён');
-  } catch(e){
-    console.error('Save template error:', e);
-    showToast('Ошибка сохранения: ' + e.message);
-  }
-};
 function addWorkType(){
   var name=prompt('Название вида работы:');
   if(!name||!name.trim())return;
@@ -2772,7 +2619,7 @@ function _doPrintNariad(){
 var _tt;
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('sh');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('sh'),3000)}
 window.showToast=showToast;
-window.onload=function(){sCB();};
+window.onload=function(){sCB();loadTpl('МК');};
 </script>
 
 <!-- Firebase Auth + Load Orders -->
@@ -2793,7 +2640,6 @@ const firebaseConfig = {
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-window.db = db;
 
 window.LabDesk = window.LabDesk || {};
 window.LabDesk.auth = auth;
@@ -3543,44 +3389,6 @@ window.saveLabOrder = async function(){
       description: 'Заказ '+orderNumber+' создан лабораторией',
       created_at: serverTimestamp(),
     });
-
-    // Автоматически создаём этапы производства из шаблона категории основной работы
-    try {
-      var mainArt = mainWork.art || (works[0] && works[0].article);
-      var mainWorkObj = (window._allWorks||[]).find(function(x){return x.art===mainArt;});
-      var cat = mainWorkObj && (mainWorkObj.cat || mainWorkObj.category);
-      if(cat){
-        var tplStages = null;
-        // Берём из кэша если есть
-        if(window._tplCache && window._tplCache[cat] && window._tplCache[cat].stages && window._tplCache[cat].stages.length){
-          tplStages = window._tplCache[cat].stages;
-        } else {
-          // Иначе грузим шаблон категории из базы
-          var tq = query(collection(db,'stage_templates'), where('lab_id','==',user.lab_id), where('category','==',cat));
-          var tsnap = await getDocs(tq);
-          if(!tsnap.empty){ tplStages = tsnap.docs[0].data().stages||[]; }
-        }
-        if(tplStages && tplStages.length){
-          for(var si=0; si<tplStages.length; si++){
-            var st = tplStages[si];
-            var stName = (typeof st==='string') ? st : st.name;
-            var stDays = (typeof st==='string') ? 1 : (st.days||1);
-            await addDoc(collection(db,'stages'),{
-              order_id: orderRef.id,
-              lab_id: user.lab_id,
-              name: stName,
-              status: 'idle',
-              technician_name: '',
-              days_planned: stDays,
-              comment: '',
-              due_date: null,
-              sort_order: si,
-              created_at: serverTimestamp(),
-            });
-          }
-        }
-      }
-    } catch(stageErr){ console.warn('Auto stages from template failed:', stageErr); }
 
     window.showToast('✅ Заказ '+orderNumber+' создан');
     document.getElementById('mo-ord').classList.remove('op');
@@ -4559,11 +4367,11 @@ window.renderOrders = function(orders) {
     var dl = window.getDeadlineStatus(o.due_date, o.due_time, o.status);
     if(dl.level==='overdue') cOverdue++;
   });
-  var setStat=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
-  setStat('ord-st-active', cActive);
-  setStat('ord-st-overdue', cOverdue);
-  setStat('ord-st-returned', cReturned);
-  setStat('ord-st-new', cNew);
+  const stats = document.querySelectorAll('#scr-ord .sc .sc-v');
+  if (stats[0]) stats[0].textContent = cActive;   // Всего активных
+  if (stats[1]) stats[1].textContent = cOverdue;  // Просрочено
+  if (stats[2]) stats[2].textContent = cReturned; // Переделки
+  if (stats[3]) stats[3].textContent = cNew;      // Новых от клиник
 }
 
 // Фильтрация списка заказов
@@ -4662,8 +4470,6 @@ onAuthStateChanged(auth, async (user) => {
     window.subscribePriceList(data.lab_id);
     // Подписываемся на клиники
     window.subscribeClinics(data.lab_id);
-    // Подписываемся на банк этапов
-    window.subscribeStageBank(data.lab_id);
 
     // Подписываемся на заказы — обновляются в реальном времени
     const ordersQ = query(
