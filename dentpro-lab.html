@@ -572,24 +572,19 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
       <!-- history -->
       <div class="pn">
         <div class="ph"><div class="ph-t">📋 История изменений</div></div>
-        <div class="pb"><div class="tl">
-          <div class="tli"><div class="tld"><div class="tldt" style="background:var(--re)"></div><div class="tll"></div></div><div class="tlb"><div class="tltit">Этап 4 — возврат<span class="tltime">20 мая 16:42</span></div><div class="tldesc">Сидоров В.</div><div class="tltag">😬 Плохой слепок</div></div></div>
-          <div class="tli"><div class="tld"><div class="tldt" style="background:var(--pu)"></div><div class="tll"></div></div><div class="tlb"><div class="tltit">Этап 3 — выполнен<span class="tltime">19 мая 17:00</span></div><div class="tldesc">Петрова М. · CAD/CAM</div></div></div>
-          <div class="tli"><div class="tld"><div class="tldt" style="background:var(--gr)"></div><div class="tll"></div></div><div class="tlb"><div class="tltit">Этап 2 — выполнен<span class="tltime">18 мая 15:20</span></div><div class="tldesc">Иванов А. · отливка</div></div></div>
-          <div class="tli"><div class="tld"><div class="tldt" style="background:var(--gr)"></div><div class="tll"></div></div><div class="tlb"><div class="tltit">Этап 1 — выполнен<span class="tltime">18 мая 10:30</span></div><div class="tldesc">Сидоров В. · приём слепка</div></div></div>
-          <div class="tli"><div class="tld"><div class="tldt" style="background:var(--te)"></div></div><div class="tlb"><div class="tltit">Заказ создан<span class="tltime">18 мая 10:00</span></div><div class="tldesc">СтомаКлиник · Смирнова О.П.</div></div></div>
+        <div class="pb"><div class="tl" id="od-history-list">
+          <div style="color:var(--t3);font-size:12px;text-align:center;padding:14px">Загрузка...</div>
         </div></div>
       </div>
 
-      <!-- files -->
+      <!-- files (заглушка — реализация позже) -->
       <div class="pn"><div class="ph"><div class="ph-t">📎 Файлы</div></div>
         <div class="pb">
-          <div class="fl">
-            <div class="fi" onclick="showToast('Открыт: slipok_kozlov.jpg')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span>slipok_kozlov.jpg</span><small>18 мая</small></div>
-            <div class="fi" onclick="showToast('Открыт: foto_13-16.jpg')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span>foto_13-16.jpg</span><small>20 мая</small></div>
-            <div class="fi" onclick="showToast('Открыт: model_v1.stl')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>model_v1.stl</span><small>19 мая</small></div>
+          <div style="background:var(--bg);border:1px dashed var(--bm);border-radius:var(--rs);padding:18px 14px;text-align:center">
+            <div style="font-size:32px;margin-bottom:6px;opacity:.5">📎</div>
+            <div style="font-size:13px;font-weight:600;color:var(--t2);margin-bottom:3px">Файлы к заказу</div>
+            <div style="font-size:11px;color:var(--t3);line-height:1.5">Функция в разработке.<br>Скоро здесь можно будет прикрепить<br>слепки, фото и STL-модели.</div>
           </div>
-          <div class="upz" onclick="showToast('Выберите файл')"><svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg><p><strong>Загрузить файл</strong> — PNG, STL, PDF</p></div>
         </div>
       </div>
     </div>
@@ -957,11 +952,11 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
         </button>
       </div>
       <div class="pb" style="display:flex;flex-direction:column;gap:6px" id="work-types-list">
-        <div class="ref-item"><div class="ref-item-name">Металлокерамика (МК)</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать МК')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">E-max (IPS e.max Press)</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">ZrO2 — цирконий</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">Бюгельный протез</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
-        <div class="ref-item"><div class="ref-item-name">Съёмный протез</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'))">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
+        <div class="ref-item"><div class="ref-item-name">Металлокерамика (МК)</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'));loadTpl('МК')">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать МК')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
+        <div class="ref-item"><div class="ref-item-name">E-max (IPS e.max Press)</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'));loadTpl('E-max')">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
+        <div class="ref-item"><div class="ref-item-name">ZrO2 — цирконий</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'));loadTpl('ZrO2')">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
+        <div class="ref-item"><div class="ref-item-name">Бюгельный протез</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'));loadTpl('Бюгель')">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
+        <div class="ref-item"><div class="ref-item-name">Съёмный протез</div><div class="ref-item-actions"><button class="btn btn-xs btn-g" onclick="goTo('tpl',document.getElementById('ni-tpl'));loadTpl('Съёмный')">Этапы</button><button class="btn btn-xs btn-g" onclick="showToast('Редактировать')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-xs btn-g" onclick="showToast('Удалено')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div></div>
       </div>
     </div>
 
@@ -999,11 +994,15 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 <div class="scr" id="scr-tpl">
   <div style="display:grid;grid-template-columns:260px 1fr;gap:14px">
 
-    <!-- Список видов работ (категории прайса) -->
+    <!-- Список видов работ -->
     <div class="pn" style="align-self:start">
       <div class="ph"><div class="ph-t">Вид работы</div></div>
-      <div class="pb" style="display:flex;flex-direction:column;gap:4px" id="tpl-categories">
-        <div style="font-size:12px;color:var(--t3);text-align:center;padding:16px">Загрузка...</div>
+      <div class="pb" style="display:flex;flex-direction:column;gap:4px">
+        <div class="tpl-wt active-wt" id="wt-mk" onclick="loadTpl('МК',this)">Металлокерамика (МК)</div>
+        <div class="tpl-wt" id="wt-emax" onclick="loadTpl('E-max',this)">E-max (IPS e.max Press)</div>
+        <div class="tpl-wt" id="wt-zr" onclick="loadTpl('ZrO2',this)">ZrO2 — цирконий</div>
+        <div class="tpl-wt" id="wt-bug" onclick="loadTpl('Бюгель',this)">Бюгельный протез</div>
+        <div class="tpl-wt" id="wt-snem" onclick="loadTpl('Съёмный',this)">Съёмный протез</div>
       </div>
     </div>
 
@@ -1019,7 +1018,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
             <button class="btn btn-sm btn-g" onclick="addStageToTpl()">
               <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить этап
             </button>
-            <button class="btn btn-sm btn-p" onclick="saveTplToFirestore()">
+            <button class="btn btn-sm btn-p" onclick="showToast('Шаблон сохранён')">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Сохранить
             </button>
           </div>
@@ -1265,7 +1264,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 </div><!-- /layout -->
 <script>
 // ── Navigation ──
-var PM={db:'Дашборд',ord:'Заказы / Наряды',order:'Заказ #1043',pr:'Прайс услуг',tech:'Техники',sch:'График работы',sal:'Зарплата',an:'Аналитика',acts:'Акты выполненных работ',ref:'Справочники',tpl:'Шаблоны этапов',cl:'Клиники',settings:'Реквизиты лаборатории'};
+var PM={db:'Дашборд',ord:'Заказы / Наряды',order:'Заказ',pr:'Прайс услуг',tech:'Техники',sch:'График работы',sal:'Зарплата',an:'Аналитика',acts:'Акты выполненных работ',ref:'Справочники',tpl:'Шаблоны этапов',cl:'Клиники',settings:'Реквизиты лаборатории'};
 function goTo(n,el){
   document.querySelectorAll('.scr').forEach(s=>s.classList.remove('a'));
   document.querySelectorAll('.ni').forEach(i=>i.classList.remove('a'));
@@ -1274,7 +1273,6 @@ function goTo(n,el){
   document.getElementById('page-title').textContent=PM[n]||n;
   if(n==='order'){setTimeout(sCB,80);setTimeout(drawAllBridges,120);setTimeout(renderOrdStages,50);}
   if(n==='acts' && window.initActsScreen){setTimeout(window.initActsScreen,50);}
-  if(n==='tpl' && window.loadTplCategories){setTimeout(window.loadTplCategories,50);}
   if(n==='settings' && window.loadLabRequisites){setTimeout(window.loadLabRequisites,50);}
 }
 function openOrdDet(){goTo('order',null);document.getElementById('ni-ord').classList.add('a');setTimeout(renderOrdStages,50);}
@@ -1286,18 +1284,43 @@ var _allWorks=[];  // заполняется из Firestore (прайс)
 // Никакой автоматики, фокуса, print() — основное окно не трогается вообще.
 // Пользователь смотрит документ и при желании печатает через Cmd+P.
 function printViaIframe(html){
-  var w = window.open('about:blank', '_blank');
-  if(!w){
-    if(typeof showToast==='function') showToast('Разрешите всплывающие окна для печати в настройках браузера');
-    return;
-  }
-  var hint = '<div class="__noprint" style="background:#f0f0f0;border-bottom:1px solid #ddd;padding:8px 16px;font-family:Arial,sans-serif;font-size:13px;color:#555">'
-    + 'Чтобы распечатать или сохранить в PDF — нажмите Cmd+P (Ctrl+P на Windows)'
-    + '</div><style>@media print{.__noprint{display:none !important}}</style>';
-  var withHint = html.replace(/<body[^>]*>/i, function(m){ return m + hint; });
-  if(withHint === html) withHint = hint + html;
-  w.document.write(withHint);
-  w.document.close();
+  // Превью документа в оверлее поверх страницы (без всплывающих окон).
+  // Пользователь видит документ в полный размер и сам жмёт «Печать».
+  var old = document.getElementById('__labdesk_print_overlay__');
+  if(old){ try{ old.remove(); }catch(e){} }
+
+  var overlay = document.createElement('div');
+  overlay.id = '__labdesk_print_overlay__';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;';
+
+  // Панель управления
+  var bar = document.createElement('div');
+  bar.style.cssText = 'width:100%;background:#1a1a1a;color:#fff;padding:12px 20px;display:flex;gap:14px;align-items:center;font-family:Arial,sans-serif;font-size:14px;flex:0 0 auto;box-sizing:border-box';
+  bar.innerHTML = '<button id="__print_go__" style="background:#6C5CE7;color:#fff;border:0;border-radius:6px;padding:9px 22px;font-size:14px;font-weight:600;cursor:pointer">🖨 Печать</button>'
+    + '<span style="opacity:.65">Проверьте документ и нажмите «Печать»</span>'
+    + '<button id="__print_close__" style="margin-left:auto;background:transparent;color:#fff;border:1px solid #555;border-radius:6px;padding:9px 18px;font-size:14px;cursor:pointer">Закрыть</button>';
+  overlay.appendChild(bar);
+
+  // Сам документ в iframe (виден целиком, можно прокручивать)
+  var frame = document.createElement('iframe');
+  frame.style.cssText = 'flex:1 1 auto;width:min(900px,100%);background:#fff;border:0;margin:16px 0;box-shadow:0 8px 40px rgba(0,0,0,.3)';
+  overlay.appendChild(frame);
+
+  document.body.appendChild(overlay);
+
+  // Заполняем iframe документом
+  if('srcdoc' in frame){ frame.srcdoc = html; }
+  else { var d=frame.contentWindow.document; d.open(); d.write(html); d.close(); }
+
+  // Кнопка печати — печатает только содержимое iframe
+  document.getElementById('__print_go__').onclick = function(){
+    try { frame.contentWindow.focus(); frame.contentWindow.print(); }
+    catch(e){ console.error('Print error:', e); }
+  };
+  // Закрытие
+  function closeOverlay(){ try{ overlay.remove(); }catch(e){} }
+  document.getElementById('__print_close__').onclick = closeOverlay;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) closeOverlay(); });
 }
 window.printViaIframe = printViaIframe;
 var _pickedWorks=[];
@@ -1932,11 +1955,15 @@ function reindexOrdStages(){
 }
 function tgOrdS(i){var b=document.getElementById('osb-'+i);if(b)b.classList.toggle('op');}
 function setOrdStatus(i,st){
+  var prev = _ordStages[i].status;
+  if(prev === st) return; // не пишем дубль если статус не меняется
   _ordStages[i].status=st;
   renderOrdStages();
   var b=document.getElementById('osb-'+i);if(b)b.classList.add('op');
   // Сразу сохраняем статус в Firestore
   if(window.saveStageToFirestore)window.saveStageToFirestore(i);
+  // Пишем в историю
+  if(window.writeStageHistory) window.writeStageHistory(i, st);
   showToast('Статус: '+_statusMap[st]);
 }
 function pickOrdTech(el,i,name){_ordStages[i].tech=name;renderOrdStages();document.getElementById('osb-'+i).classList.add('op');showToast('Назначен: '+name);}
@@ -2186,83 +2213,22 @@ var _defDays={
   'Приём слепка':1,'Отливка модели':1,'Моделировка из воска':2,'CAD/CAM моделирование':1,'CAD моделирование':1,'Литьё каркаса':2,'Обработка / посадка каркаса':1,'Нанесение керамики + глазурь':2,'Нанесение керамики':2,'Примерка / сдача работы':1,'Прессовка IPS e.max':2,'Глазурь / политура':1,'Глазурь':1,'Фрезерование (CAM)':1,'Синтеризация циркония':1,'Приём слепка / скан':1,'Дублирование модели':1,'Моделировка каркаса из воска':2,'Обработка каркаса':1,'Постановка зубов':2,'Примерка каркаса':1,'Финальная обработка':1,'Сдача работы':1,'Постановка зубов (воск)':2,'Примерка в воске':1,'Гипсовка в кювету':1,'Замена воска пластмассой':2,'Шлифовка / полировка':1
 };
 var _techs=['Иванов А.','Петрова М.','Сидоров В.'];
-var _curTpl=null;
-window._tplCache = {};        // category -> {id, stages:[{name,days}]}
-window._tplCategories = [];   // список категорий из прайса
-
-// Маппинг названий старых дефолтных шаблонов на категории прайса (для первого заполнения)
-function defaultStagesForCategory(cat){
-  var lc = (cat||'').toLowerCase();
-  if(lc.indexOf('металлокерам')>=0) return _tpls['МК'];
-  if(lc.indexOf('e-max')>=0 || lc.indexOf('емакс')>=0 || lc.indexOf('пресс')>=0) return _tpls['E-max'];
-  if(lc.indexOf('цирконий')>=0 || lc.indexOf('zro2')>=0 || lc.indexOf('диоксид')>=0) return _tpls['ZrO2'];
-  if(lc.indexOf('бюгель')>=0) return _tpls['Бюгель'];
-  if(lc.indexOf('съёмн')>=0 || lc.indexOf('съемн')>=0) return _tpls['Съёмный'];
-  return []; // для остальных категорий — пустой шаблон
-}
-
-// Загрузка списка категорий из прайса + шаблонов из Firestore
-window.loadTplCategories = async function(){
-  var user = window.LabDesk.currentUser;
-  if(!user) return;
-  var box = document.getElementById('tpl-categories');
-  if(!box) return;
-  try {
-    // 1. Категории из прайса (work_types)
-    var pq = query(collection(db,'work_types'), where('lab_id','==',user.lab_id));
-    var psnap = await getDocs(pq);
-    var catSet = {};
-    psnap.docs.forEach(function(d){ var c=d.data().category||'Без категории'; catSet[c]=true; });
-    window._tplCategories = Object.keys(catSet).sort();
-
-    // 2. Существующие шаблоны из Firestore
-    var tq = query(collection(db,'stage_templates'), where('lab_id','==',user.lab_id));
-    var tsnap = await getDocs(tq);
-    window._tplCache = {};
-    tsnap.docs.forEach(function(d){ var data=d.data(); window._tplCache[data.category]={id:d.id, stages:data.stages||[]}; });
-
-    if(window._tplCategories.length===0){
-      box.innerHTML = '<div style="font-size:12px;color:var(--t3);text-align:center;padding:16px">Сначала заполните прайс — категории появятся здесь</div>';
-      return;
-    }
-    // Рендер списка категорий
-    box.innerHTML = window._tplCategories.map(function(cat){
-      return '<div class="tpl-wt" data-cat="'+cat.replace(/"/g,'&quot;')+'" onclick="loadTpl(\''+cat.replace(/'/g,"\\'")+'\',this)">'+cat+'</div>';
-    }).join('');
-    // Открываем первую категорию
-    var first = box.querySelector('.tpl-wt');
-    if(first) loadTpl(window._tplCategories[0], first);
-  } catch(e){
-    console.error('Load tpl categories error:', e);
-    box.innerHTML = '<div style="font-size:12px;color:#c00;text-align:center;padding:16px">Ошибка загрузки категорий</div>';
-  }
-};
-
-function loadTpl(cat, el){
-  _curTpl = cat;
+var _curTpl='МК';
+function loadTpl(name,el){
+  _curTpl=name;
   if(el){document.querySelectorAll('.tpl-wt').forEach(w=>w.classList.remove('active-wt'));el.classList.add('active-wt');}
-  document.getElementById('tpl-title').textContent='Шаблон: '+cat;
-
-  // Берём этапы из кэша (из базы), либо дефолтные для этой категории
-  var cached = window._tplCache[cat];
-  var stages;
-  if(cached){
-    stages = cached.stages.slice();
-  } else {
-    // Шаблона в базе ещё нет — предлагаем дефолтный набор
-    stages = (defaultStagesForCategory(cat)||[]).map(function(name){ return {name:name, days:(_defDays[name]||1)}; });
-  }
-
+  document.getElementById('tpl-title').textContent='Шаблон: '+name;
+  var stages=_tpls[name]||[];
   var cont=document.getElementById('tpl-stages');
   cont.innerHTML='';
   stages.forEach(function(s,i){
-    var nm = (typeof s==='string') ? s : s.name;
-    var days = (typeof s==='string') ? (_defDays[s]||1) : (s.days||1);
+    var days=_defDays[s]||1;
+    var techOpts=_techs.map(function(t){return '<option>'+t+'</option>';}).join('');
     var row=document.createElement('div');
     row.className='tpl-stage';
     row.draggable=true;
     row.innerHTML='<div class="tpl-stage-drag">⠿</div>'
-      +'<div class="tpl-stage-name">'+(i+1)+'. '+nm+'</div>'
+      +'<div class="tpl-stage-name">'+(i+1)+'. '+s+'</div>'
       +'<input type="number" min="1" max="30" value="'+days+'" title="Срок (дни)">'
       +'<button class="btn btn-xs btn-g" onclick="removeStage(this)" title="Удалить"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
     addDragDrop(row);
@@ -2270,64 +2236,17 @@ function loadTpl(cat, el){
   });
   if(stages.length===0) cont.innerHTML='<div style="font-size:13px;color:var(--t3);text-align:center;padding:20px">Нет этапов — нажмите «Добавить этап»</div>';
 }
-
-function removeStage(btn){btn.closest('.tpl-stage').remove();renumberStages();showToast('Этап удалён — нажмите «Сохранить»');}
+function removeStage(btn){btn.closest('.tpl-stage').remove();renumberStages();showToast('Этап удалён');}
 function renumberStages(){document.querySelectorAll('#tpl-stages .tpl-stage').forEach(function(r,i){var n=r.querySelector('.tpl-stage-name');n.textContent=(i+1)+'. '+n.textContent.replace(/^\d+\.\s/,'');});}
-
 function addStageToTpl(){
-  if(!_curTpl){ showToast('Сначала выберите вид работы'); return; }
   var name=prompt('Название этапа:');
   if(!name||!name.trim())return;
-  var cont=document.getElementById('tpl-stages');
-  // Если был плейсхолдер «нет этапов» — очищаем
-  if(cont.querySelector('div[style*="text-align:center"]')) cont.innerHTML='';
-  var i = cont.querySelectorAll('.tpl-stage').length;
-  var row=document.createElement('div');
-  row.className='tpl-stage';
-  row.draggable=true;
-  row.innerHTML='<div class="tpl-stage-drag">⠿</div>'
-    +'<div class="tpl-stage-name">'+(i+1)+'. '+name.trim()+'</div>'
-    +'<input type="number" min="1" max="30" value="1" title="Срок (дни)">'
-    +'<button class="btn btn-xs btn-g" onclick="removeStage(this)" title="Удалить"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-  addDragDrop(row);
-  cont.appendChild(row);
-  showToast('Этап добавлен — не забудьте «Сохранить»');
+  var stages=_tpls[_curTpl]||[];
+  stages.push(name.trim());
+  _tpls[_curTpl]=stages;
+  loadTpl(_curTpl);
+  showToast('Этап добавлен: '+name.trim());
 }
-
-// Сохранение текущего шаблона в Firestore
-window.saveTplToFirestore = async function(){
-  if(!_curTpl){ showToast('Не выбран вид работы'); return; }
-  var user = window.LabDesk.currentUser;
-  if(!user){ showToast('Нет сессии'); return; }
-  // Собираем этапы из DOM
-  var stages = [];
-  document.querySelectorAll('#tpl-stages .tpl-stage').forEach(function(r){
-    var nm = r.querySelector('.tpl-stage-name').textContent.replace(/^\d+\.\s/,'').trim();
-    var days = parseInt(r.querySelector('input[type=number]').value,10) || 1;
-    if(nm) stages.push({name:nm, days:days});
-  });
-  try {
-    var cached = window._tplCache[_curTpl];
-    if(cached && cached.id){
-      // Обновляем существующий
-      await updateDoc(doc(db,'stage_templates',cached.id), { stages: stages, updated_at: serverTimestamp() });
-    } else {
-      // Создаём новый
-      var ref = await addDoc(collection(db,'stage_templates'), {
-        lab_id: user.lab_id,
-        category: _curTpl,
-        stages: stages,
-        created_at: serverTimestamp(),
-      });
-      window._tplCache[_curTpl] = { id: ref.id, stages: stages };
-    }
-    if(window._tplCache[_curTpl]) window._tplCache[_curTpl].stages = stages;
-    showToast('✓ Шаблон сохранён');
-  } catch(e){
-    console.error('Save template error:', e);
-    showToast('Ошибка сохранения: ' + e.message);
-  }
-};
 function addWorkType(){
   var name=prompt('Название вида работы:');
   if(!name||!name.trim())return;
@@ -2752,7 +2671,7 @@ function _doPrintNariad(){
 var _tt;
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('sh');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('sh'),3000)}
 window.showToast=showToast;
-window.onload=function(){sCB();};
+window.onload=function(){sCB();loadTpl('МК');};
 </script>
 
 <!-- Firebase Auth + Load Orders -->
@@ -3523,37 +3442,6 @@ window.saveLabOrder = async function(){
       created_at: serverTimestamp(),
     });
 
-    // Автоматически создаём этапы из шаблона категории основной работы
-    try {
-      var mainArt = mainWork.art || (works[0] && works[0].article);
-      var mainWorkObj = window._allWorks ? window._allWorks.find(function(x){return x.art===mainArt;}) : null;
-      var cat = mainWorkObj && mainWorkObj.category;
-      if(cat){
-        // Загружаем шаблон категории если ещё не в кэше
-        var tpl = window._tplCache && window._tplCache[cat];
-        if(!tpl){
-          var tq = query(collection(db,'stage_templates'), where('lab_id','==',user.lab_id), where('category','==',cat));
-          var tsnap = await getDocs(tq);
-          if(!tsnap.empty){ tpl = {stages: tsnap.docs[0].data().stages||[]}; }
-        }
-        if(tpl && tpl.stages && tpl.stages.length){
-          for(var si=0; si<tpl.stages.length; si++){
-            var st = tpl.stages[si];
-            await addDoc(collection(db,'stages'),{
-              order_id: orderRef.id,
-              lab_id: user.lab_id,
-              name: st.name,
-              status: 'pending',
-              tech: '',
-              days_default: st.days || 1,
-              sort_order: si,
-              created_at: serverTimestamp(),
-            });
-          }
-        }
-      }
-    } catch(stageErr){ console.warn('Auto stages from template failed:', stageErr); }
-
     window.showToast('✅ Заказ '+orderNumber+' создан');
     document.getElementById('mo-ord').classList.remove('op');
   } catch(e){
@@ -3578,27 +3466,31 @@ window.onClinicChange = async function(){
     return;
   }
   sel.innerHTML = '<option value="">Загрузка врачей...</option>';
+  const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  // 1) Врачи — отдельно, чтобы ошибка цен их не стирала
   try {
-    const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    // Врачи
     const q = query(collection(db,'doctors'), where('clinic_id','==',clinicId));
     const snap = await getDocs(q);
     const docs = snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.is_active!==false);
     window._doctorsCache[clinicId] = docs;
     let html = '<option value="">— выберите врача —</option>';
-    docs.forEach(doc => { html += '<option value="'+doc.id+'">'+doc.full_name+'</option>'; });
+    docs.forEach(doc => { html += '<option value="'+doc.id+'">'+(doc.full_name||'без имени')+'</option>'; });
     html += '<option value="__new__">+ Новый врач</option>';
     sel.innerHTML = html;
-    // Индивидуальные цены клиники
+  } catch(e){
+    console.error('Doctors load error:', e);
+    sel.innerHTML = '<option value="">— выберите врача —</option><option value="__new__">+ Новый врач</option>';
+  }
+  // 2) Индивидуальные цены клиники — отдельно
+  try {
     const pq = query(collection(db,'clinic_prices'), where('clinic_id','==',clinicId));
     const ps = await getDocs(pq);
     window._orderClinicPrices = {};
     ps.docs.forEach(d=>{ const data=d.data(); window._orderClinicPrices[data.work_type_id] = data.price; });
-    // Пересчитываем уже добавленные работы под цены этой клиники
     if(window._pickedWorks && _pickedWorks.length) applyClinicPricesToPicked();
   } catch(e){
-    console.error('Clinic data load error:', e);
-    sel.innerHTML = '<option value="">— выберите врача —</option><option value="__new__">+ Новый врач</option>';
+    console.error('Clinic prices load error:', e);
+    window._orderClinicPrices = {};
   }
 };
 
@@ -3732,7 +3624,7 @@ window.loadActOrders = function(){
 };
 
 function orderTotal(o){
-  if(o.works && o.works.length) return o.works.reduce(function(s,w){return s+(w.price||0)*(w.qty||1);},0);
+  if(o.works && o.works.length) return o.works.reduce(function(s,w){return s+(Number(w.price)||0)*(Number(w.qty)||1);},0);
   return 0;
 }
 
@@ -3743,7 +3635,7 @@ function renderActOrdersList(){
     var checked = window._actSelectedIds[o.id];
     var sum = orderTotal(o);
     return '<label style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--b);border-radius:var(--rs);margin-bottom:5px;cursor:pointer;font-size:12px">'
-      +'<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleActOrder(\''+o.id+'\',this.checked)" style="width:auto">'
+      +'<input type="checkbox" class="act-ord-cb" data-oid="'+o.id+'" data-sum="'+sum+'" '+(checked?'checked':'')+' onchange="toggleActOrder(\''+o.id+'\',this.checked)" style="width:auto">'
       +'<div style="flex:1"><div style="font-weight:600">'+(o.patient_name||'—')+'</div>'
       +'<div style="color:var(--t3);font-size:11px">'+(o.order_number||'')+' · '+(o.work_type||'')+'</div></div>'
       +'<div style="font-weight:700;color:var(--put)">'+sum.toLocaleString('ru')+' ₽</div>'
@@ -3758,18 +3650,33 @@ window.toggleActOrder = function(id, checked){
 };
 
 function updateActTotal(){
-  var orders = window._actOrders.filter(function(o){return window._actSelectedIds[o.id];});
-  var total = orders.reduce(function(s,o){return s+orderTotal(o);},0);
+  // Считаем напрямую с отмеченных галочек — это исключает рассинхрон состояния
+  var cbs = document.querySelectorAll('#act-patients-list .act-ord-cb');
+  var total = 0, count = 0;
+  cbs.forEach(function(cb){
+    if(cb.checked){
+      total += Number(cb.dataset.sum) || 0;
+      count++;
+      window._actSelectedIds[cb.dataset.oid] = true;
+    } else {
+      window._actSelectedIds[cb.dataset.oid] = false;
+    }
+  });
   var block = document.getElementById('act-total-block');
   var sumEl = document.getElementById('act-total-sum');
-  if(orders.length){ block.style.display=''; sumEl.textContent = total.toLocaleString('ru')+' ₽'; }
+  if(count){ block.style.display=''; sumEl.textContent = total.toLocaleString('ru')+' ₽'; }
   else block.style.display='none';
 }
 
 window.createAct = async function(){
   var clinicId = document.getElementById('act-clinic').value;
   if(!clinicId){ window.showToast('Выберите клинику'); return; }
-  var orders = window._actOrders.filter(function(o){return window._actSelectedIds[o.id];});
+  // Берём выбранные заказы напрямую с отмеченных галочек (надёжно)
+  var checkedIds = {};
+  document.querySelectorAll('#act-patients-list .act-ord-cb').forEach(function(cb){
+    if(cb.checked) checkedIds[cb.dataset.oid] = true;
+  });
+  var orders = window._actOrders.filter(function(o){return checkedIds[o.id];});
   if(!orders.length){ window.showToast('Нет выбранных заказов'); return; }
   var user = window.LabDesk.currentUser;
   var clinic = (window._clinicsFromDB||[]).find(function(c){return c.id===clinicId;});
@@ -3817,12 +3724,15 @@ window.subscribeActs = function(){
   if(!user) return;
   var q = query(collection(db,'acts'), where('lab_id','==',user.lab_id));
   onSnapshot(q, function(s){
-    var acts = s.docs.map(d=>({id:d.id,...d.data()}));
-    acts.sort(function(a,b){
-      var ta=a.created_at&&a.created_at.seconds?a.created_at.seconds:0;
-      var tb=b.created_at&&b.created_at.seconds?b.created_at.seconds:0;
-      return tb-ta;
+    var acts = s.docs.map(function(d){
+      var data = d.data();
+      // Если timestamp ещё не подтверждён сервером — считаем акт самым свежим
+      var pending = d.metadata.hasPendingWrites;
+      var ts = (data.created_at && data.created_at.seconds) ? data.created_at.seconds
+               : (pending ? Number.MAX_SAFE_INTEGER : 0);
+      return {id:d.id, _ts:ts, ...data};
     });
+    acts.sort(function(a,b){ return b._ts - a._ts; });
     window._actsCache = {};
     acts.forEach(function(a){ window._actsCache[a.id]=a; });
     renderActsList(acts);
@@ -4023,7 +3933,55 @@ window.sendChatMessage = async function(text) {
   }
 };
 
-// ── Чат: подписка на сообщения заказа ──
+// ── История изменений заказа ──
+window._historyUnsub = null;
+window.subscribeOrderHistory = async function(orderId){
+  if (window._historyUnsub) { window._historyUnsub(); window._historyUnsub = null; }
+  const { collection, query, where, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const box = document.getElementById('od-history-list');
+  if(!box) return;
+  const q = query(collection(db,'order_history'), where('order_id','==',orderId));
+  window._historyUnsub = onSnapshot(q, function(snap){
+    let items = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    // Свежие сверху
+    items.sort(function(a,b){
+      var ta = a.created_at && a.created_at.toDate ? a.created_at.toDate().getTime() : 0;
+      var tb = b.created_at && b.created_at.toDate ? b.created_at.toDate().getTime() : 0;
+      return tb - ta;
+    });
+    if(!items.length){
+      box.innerHTML = '<div style="color:var(--t3);font-size:12px;text-align:center;padding:14px">История пуста</div>';
+      return;
+    }
+    var EVENT_COLOR = {
+      created:'var(--te)', status_changed:'var(--pu)', stage_added:'var(--gr)',
+      stage_completed:'var(--gr)', returned:'var(--re)', chat_message:'#94A3B8'
+    };
+    var STATUS_LABELS = { new:'Новый', in_progress:'В работе', done:'Готово', returned:'Переделка', waiting:'На проверке' };
+    box.innerHTML = items.map(function(h, idx){
+      var color = EVENT_COLOR[h.event_type] || 'var(--te)';
+      var time = h.created_at && h.created_at.toDate
+        ? h.created_at.toDate().toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+        : '';
+      var title = h.description || '';
+      // Делаем человекочитаемее
+      Object.keys(STATUS_LABELS).forEach(function(k){
+        title = title.replace('Статус изменён на: '+k, 'Статус: ' + STATUS_LABELS[k]);
+      });
+      var desc = h.user_name || '';
+      var tag  = h.tag ? '<div class="tltag">'+h.tag+'</div>' : '';
+      var line = idx < items.length-1 ? '<div class="tll"></div>' : '';
+      return '<div class="tli"><div class="tld"><div class="tldt" style="background:'+color+'"></div>'+line+'</div>'
+        +'<div class="tlb"><div class="tltit">'+title+(time?'<span class="tltime">'+time+'</span>':'')+'</div>'
+        +(desc?'<div class="tldesc">'+desc+'</div>':'')+tag+'</div></div>';
+    }).join('');
+  }, function(err){
+    console.error('History load error:', err);
+    box.innerHTML = '<div style="color:var(--t3);font-size:12px;text-align:center;padding:14px">Не удалось загрузить историю</div>';
+  });
+};
+
+
 window.subscribeChatMessages = async function(orderId) {
   if (window._chatUnsub) { window._chatUnsub(); window._chatUnsub = null; }
   const { collection, query, where, orderBy, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -4145,18 +4103,30 @@ window.saveStageToFirestore = async function(idx) {
       });
       window._ordStages[idx].id = ref.id;
     }
-    // Пишем в историю при смене статуса
-    await addDoc(collection(db, 'order_history'), {
-      order_id: orderId,
-      user_id: user.uid,
-      event_type: 'stage_updated',
-      description: 'Этап «' + s.name + '» — ' + (s.status),
-      created_at: serverTimestamp(),
-    });
+    // История пишется только при явной смене статуса (см. pickOrdStatus)
   } catch(e) {
     console.error('Save stage error:', e);
     window.showToast('Ошибка сохранения этапа: ' + e.message);
   }
+};
+
+// Запись в историю при смене статуса этапа — вызывается только из setOrdStatus
+window.writeStageHistory = async function(idx, newStatus){
+  const orderId = window._currentOrderId;
+  if(!orderId) return;
+  const s = window._ordStages[idx];
+  if(!s) return;
+  const user = window.LabDesk.currentUser;
+  var statusLabel = (typeof _statusMap !== 'undefined' && _statusMap[newStatus]) || newStatus;
+  try {
+    await addDoc(collection(db, 'order_history'), {
+      order_id: orderId,
+      user_id: user.uid,
+      event_type: 'stage_updated',
+      description: 'Этап «' + s.name + '» — ' + statusLabel,
+      created_at: serverTimestamp(),
+    });
+  } catch(e){ console.warn('History write skipped:', e); }
 };
 
 // ── Удаление этапа из Firestore ──
@@ -4231,6 +4201,9 @@ window.openOrderDetail = function(orderId) {
 
   document.getElementById('od-meta').textContent =
     (o.order_number||'') + ' · ' + (o.clinic_name||'—') + ' · Врач: ' + (o.doctor_name||'—');
+  // Реальный номер в шапке страницы
+  var pageTitle = document.getElementById('page-title');
+  if(pageTitle) pageTitle.textContent = 'Заказ ' + (o.order_number || '');
   document.getElementById('od-title').textContent =
     (o.work_type||'—') + (o.quantity>1?' ×'+o.quantity:'') + ' — ' + (o.patient_name||'—');
   document.getElementById('od-status-badge').className = 'badge ' + (badgeMap[o.status]||'bn');
@@ -4278,6 +4251,9 @@ window.openOrderDetail = function(orderId) {
 
   // Подписываемся на чат заказа
   window.subscribeChatMessages(orderId);
+
+  // Подписываемся на историю изменений заказа
+  window.subscribeOrderHistory(orderId);
 
   // Показываем название клиники в шапке чата
   var chatName = document.getElementById('chat-clinic-name');
@@ -4420,6 +4396,12 @@ window.renderOrders = function(orders) {
 
   window._ordersCache = {};
   orders.forEach(o=>{ window._ordersCache[o.id]=o; });
+  // Сортируем от свежего к старому по номеру заказа (надёжнее created_at)
+  orders = orders.slice().sort(function(a,b){
+    var na = parseInt(String(a.order_number||'').replace(/\D/g,''),10) || 0;
+    var nb = parseInt(String(b.order_number||'').replace(/\D/g,''),10) || 0;
+    return nb - na;
+  });
   // Сохраняем полный список для фильтрации
   window._allOrdersList = orders.slice();
 
