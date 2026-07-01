@@ -476,6 +476,10 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
           <div id="od-title" style="font-size:18px;font-weight:700;letter-spacing:-.4px">Загрузка заказа...</div></div>
           <div style="display:flex;gap:6px;align-items:center">
             <span id="od-status-badge" class="badge">—</span>
+            <button class="btn btn-sm btn-g" onclick="openEditOrder(window._openOrderObj)" style="margin-left:4px" title="Редактировать заказ">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Изменить
+            </button>
             <button class="btn btn-sm btn-g" onclick="printNariad()" style="margin-left:4px">
               <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
               Печать наряда
@@ -488,6 +492,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
           <div class="mf"><label>Пациент</label><span id="od-patient">—</span></div>
           <div class="mf"><label>Работа</label><span id="od-work">—</span></div>
           <div class="mf"><label>Имплант / Цвет</label><span id="od-material">—</span></div>
+          <div class="mf"><label>Зубы</label><span id="od-teeth">—</span></div>
           <div class="mf mf-hl"><label>Дата сдачи</label><span id="od-due">—</span></div>
           <div class="mf"><label>Дата примерки</label><span id="od-fitting">—</span></div>
           <div class="mf"><label>Комментарий</label><span id="od-notes">—</span></div>
@@ -1380,9 +1385,69 @@ function openNewOrder(){
   // Строим и сбрасываем зубную формулу
   loBuildTeeth();
   var pop=document.getElementById('lo-tooth-popup');if(pop)pop.style.display='none';
-  var btn=document.getElementById('btn-create-order');if(btn)btn.disabled=false;
+  var btn=document.getElementById('btn-create-order');
+  if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg> Создать заказ'; }
+  window._editingOrderId=null;                                   // режим создания
+  var mt=document.querySelector('#mo-ord .mh2-t'); if(mt) mt.textContent='Новый заказ / наряд';
   document.getElementById('mo-ord').classList.add('op');
 }
+
+// ── Открыть форму в режиме РЕДАКТИРОВАНИЯ существующего заказа ──
+window.openEditOrder = async function(o){
+  if(!o){ if(window.showToast)window.showToast('Заказ не загружен'); return; }
+  window._editingOrderId = window._currentOrderId || o.id;
+  // Позиции работ из заказа → в подборщик
+  _pickedWorks = (o.works||[]).map(function(w){
+    return { art:w.article, name:w.name, price:(w.price||0), basePrice:(w.price||0), isIndiv:false, qty:(w.qty||1) };
+  });
+  window._orderClinicPrices = {};
+  // Список клиник + выбор текущей
+  var sel=document.getElementById('lo-clinic');
+  if(sel && window._clinicsFromDB){
+    sel.innerHTML='<option value="">— выберите клинику —</option>'+
+      window._clinicsFromDB.map(function(c){return '<option value="'+c.id+'">'+c.name+'</option>';}).join('');
+  }
+  if(sel) sel.value = o.clinic_id || '';
+  // Простые поля
+  var setV=function(id,v){var el=document.getElementById(id); if(el) el.value=(v==null?'':v);};
+  setV('lo-patient', o.patient_name);
+  setV('lo-color', o.color_vita);
+  setV('lo-implant', o.implant_system);
+  setV('lo-transparency', o.transparency);
+  setV('lo-notes', o.notes);
+  setV('lo-fitting', o.fitting_date);
+  setV('lo-due', o.due_date);
+  setV('lo-due-time', o.due_time || '18:00');
+  // Зубная формула
+  loLoadTeeth(o.teeth);
+  // Подборщик работ
+  renderPickedWorks();
+  // Заголовок и кнопка
+  var mt=document.querySelector('#mo-ord .mh2-t'); if(mt) mt.textContent='Изменить заказ '+(o.order_number||'');
+  var btn=document.getElementById('btn-create-order');
+  if(btn){ btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg> Сохранить изменения'; }
+  document.getElementById('mo-ord').classList.add('op');
+  // Врачи: грузим для клиники, затем выбираем врача заказа
+  if(o.clinic_id && window.onClinicChange){
+    try {
+      await window.onClinicChange();
+      var dsel=document.getElementById('lo-doctor-select');
+      var hasOpt = o.doctor_id && dsel && dsel.querySelector('option[value="'+o.doctor_id+'"]');
+      if(hasOpt){
+        dsel.value = o.doctor_id;
+        if(window.onDoctorChange) window.onDoctorChange();
+      } else {
+        // Врач введён вручную или удалён из базы → режим «новый врач»
+        if(dsel) dsel.value='__new__';
+        var nd=document.getElementById('lo-new-doctor'); if(nd) nd.style.display='block';
+        setV('lo-doctor', o.doctor_name);
+        setV('lo-doctor-phone', o.doctor_phone);
+        setV('lo-doctor-email', o.doctor_email);
+      }
+    } catch(e){ console.warn('Doctor prefill failed:', e); }
+  }
+};
+
 function svOrd(){ if(window.saveLabOrder)window.saveLabOrder(); }
 
 
@@ -1478,6 +1543,20 @@ function loBuildTeeth(){
   }
   up.innerHTML=LO_UPPER.map(function(n,i){return tooth(n,true)+(i===7?'<div style="width:8px"></div>':'');}).join('');
   lo.innerHTML=LO_LOWER.map(function(n,i){return tooth(n,false)+(i===7?'<div style="width:8px"></div>':'');}).join('');
+  loRenderSummary();
+}
+
+// Загрузка ранее выбранных зубов в форму (для режима редактирования заказа)
+function loLoadTeeth(teethArr){
+  loBuildTeeth();                       // строим пустую сетку и сбрасываем состояние
+  (teethArr||[]).forEach(function(t){
+    var n = t.tooth_number;
+    var modes = t.modes || (t.mode ? [t.mode] : []);
+    if(n && modes && modes.length){
+      loTeethState[n] = modes.slice();
+      loUpdateTooth(n);
+    }
+  });
   loRenderSummary();
 }
 
@@ -3475,6 +3554,51 @@ window.saveLabOrder = async function(){
       doctorId = docRef.id;
     }
 
+    // ── РЕЖИМ РЕДАКТИРОВАНИЯ: обновляем существующий заказ ──
+    if (window._editingOrderId) {
+      const oid = window._editingOrderId;
+      const mainWorkE = works[0] || {};
+      const totalQtyE = works.reduce((s,w)=>s+(w.qty||1),0);
+      const teethE = (typeof window.getLabTeethData==='function') ? window.getLabTeethData() : [];
+      await updateDoc(doc(db,'orders', oid), {
+        clinic_id: clinicId,
+        doctor_id: doctorId,
+        doctor_name: doctor,
+        doctor_phone: doctorPhone,
+        doctor_email: doctorEmail,
+        patient_name: patient,
+        color_vita: document.getElementById('lo-color').value.trim(),
+        implant_system: document.getElementById('lo-implant').value.trim(),
+        transparency: document.getElementById('lo-transparency').value,
+        work_type: mainWorkE.name || '',
+        quantity: totalQtyE,
+        works: works.map(w=>({article:w.art,name:w.name,qty:w.qty||1,price:w.price||0})),
+        notes: document.getElementById('lo-notes').value.trim(),
+        fitting_date: document.getElementById('lo-fitting').value || null,
+        due_date: document.getElementById('lo-due').value || null,
+        due_time: document.getElementById('lo-due-time').value || null,
+        teeth: teethE,
+        updated_at: serverTimestamp(),
+      });
+      await addDoc(collection(db,'order_history'),{
+        order_id: oid, user_id: user.uid,
+        user_name: user.full_name || user.email || '',
+        event_type: 'order_updated',
+        description: 'Заказ изменён',
+        created_at: serverTimestamp(),
+      });
+      window.showToast('✅ Заказ обновлён');
+      document.getElementById('mo-ord').classList.remove('op');
+      window._editingOrderId = null;
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg> Создать заказ';
+      // Обновляем открытую карточку заказа, если это она
+      if (window._currentOrderId === oid && typeof window.openOrderDetail === 'function') {
+        try { window.openOrderDetail(oid); } catch(e){}
+      }
+      return;
+    }
+
     // Номер заказа через транзакцию счётчика
     const labRef = doc(db, 'labs', user.lab_id);
     let orderNumber = '';
@@ -4084,6 +4208,7 @@ window.subscribeOrderHistory = async function(orderId){
     var STAGE_LABEL_COLOR  = { 'Выполнен':'var(--gr)', 'В работе':'var(--bl)', 'Возврат':'var(--re)', 'На проверке':'var(--am)', 'Ожид. инфо':'var(--am)', 'Не начат':'var(--t3)' };
     function eventColor(h){
       if(h.event_type === 'order_created') return 'var(--te)';
+      if(h.event_type === 'order_updated') return 'var(--am)';
       if(h.event_type === 'status_changed'){
         if(h.status === 'returned') return 'var(--re)';
         if(h.status === 'done')     return 'var(--gr)';
@@ -4339,6 +4464,8 @@ window.openOrderDetail = function(orderId) {
   const o = window._ordersCache[orderId];
   if (!o) return;
   window._currentOrderId = orderId;
+  o.id = orderId;
+  window._openOrderObj = o;   // для кнопки «Изменить»
 
   const statusMap = { new:'Новый', in_progress:'В работе', done:'Готово', returned:'Переделка', waiting:'На проверке' };
   const badgeMap  = { new:'bn', in_progress:'bw', done:'bg', returned:'br', waiting:'bch' };
@@ -4368,6 +4495,26 @@ window.openOrderDetail = function(orderId) {
     return '<div style="padding:1px 0">'+(w.name||'—')+q+art+'</div>';
   }).join('');
   document.getElementById('od-material').textContent = [o.implant_system||o.material, o.color_vita, o.transparency||o.surface].filter(Boolean).join(' · ') || '—';
+  // Сводка по зубам, сгруппированная по типу (Работа / Имплант / Кламмер / Замок / Отсутств.)
+  (function(){
+    var el = document.getElementById('od-teeth'); if(!el) return;
+    var teeth = o.teeth || [];
+    if(!teeth.length){ el.textContent = '—'; return; }
+    var ML = { sel:'Работа', imp:'Имплант', cla:'Кламмер', lok:'Замок', mis:'Отсутств.' };
+    var groups = {};
+    teeth.forEach(function(t){
+      var modes = t.modes || (t.mode?[t.mode]:[]);
+      modes.forEach(function(m){ (groups[m]=groups[m]||[]).push(t.tooth_number); });
+    });
+    var parts = [];
+    ['sel','imp','cla','lok','mis'].forEach(function(k){
+      if(groups[k] && groups[k].length){
+        var nums = groups[k].sort(function(a,b){return a-b;}).join(', ');
+        parts.push('<span style="color:var(--t2)">'+(ML[k]||k)+':</span> '+nums);
+      }
+    });
+    el.innerHTML = parts.join(' &nbsp;·&nbsp; ') || '—';
+  })();
   var odDueEl = document.getElementById('od-due');
   odDueEl.textContent = (o.due_date||'—') + (o.due_time ? ' · '+o.due_time : '');
   // Светофор на плашке дедлайна
