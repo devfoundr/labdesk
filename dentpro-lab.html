@@ -2781,7 +2781,6 @@ window.onRoleChange = function(){
 };
 
 window.openAddTech = function(){
-  window._editingTechId = null;   // режим создания
   document.getElementById('tech-name').value='';
   document.getElementById('tech-spec').value='';
   document.getElementById('tech-phone').value='';
@@ -2789,24 +2788,7 @@ window.openAddTech = function(){
   document.getElementById('tech-hire').value='';
   document.getElementById('tech-role').value='technician';
   window.onRoleChange();
-  var t1=document.querySelector('#mo-tech .mh2-t'); if(t1) t1.textContent='Добавить сотрудника';
-  var b1=document.getElementById('btn-save-tech'); if(b1){ b1.disabled=false; b1.textContent='Добавить'; }
-  document.getElementById('mo-tech').classList.add('op');
-};
-
-window.openEditTech = function(id){
-  var t = (window._techsCache||[]).find(function(x){return x.id===id;});
-  if(!t){ if(window.showToast)window.showToast('Сотрудник не найден'); return; }
-  window._editingTechId = id;   // режим редактирования
-  document.getElementById('tech-name').value  = t.full_name || '';
-  document.getElementById('tech-role').value  = t.role || 'technician';
-  document.getElementById('tech-spec').value  = (t.role||'technician')==='technician' ? (t.specialization||'') : '';
-  document.getElementById('tech-phone').value = t.phone || '';
-  document.getElementById('tech-rate').value  = t.default_rate || '';
-  document.getElementById('tech-hire').value  = t.hire_date || '';
-  window.onRoleChange();
-  var t1=document.querySelector('#mo-tech .mh2-t'); if(t1) t1.textContent='Изменить сотрудника';
-  var b1=document.getElementById('btn-save-tech'); if(b1){ b1.disabled=false; b1.textContent='Сохранить'; }
+  document.getElementById('btn-save-tech').disabled=false;
   document.getElementById('mo-tech').classList.add('op');
 };
 
@@ -2817,36 +2799,25 @@ window.saveTech = async function(){
   if (!name) { window.showToast('Введите ФИО сотрудника'); return; }
   const btn = document.getElementById('btn-save-tech');
   btn.disabled = true;
-  const editId = window._editingTechId || null;
-  const data = {
-    full_name: name,
-    role: role,
-    specialization: role==='technician' ? document.getElementById('tech-spec').value.trim() : ROLE_LABELS[role],
-    phone: document.getElementById('tech-phone').value.trim(),
-    default_rate: role==='technician' ? (parseFloat(document.getElementById('tech-rate').value) || 0) : 0,
-    hire_date: document.getElementById('tech-hire').value || null,
-  };
   try {
-    if (editId) {
-      data.updated_at = serverTimestamp();
-      await updateDoc(doc(db, 'technicians', editId), data);
-      document.getElementById('mo-tech').classList.remove('op');
-      if(window.showToast)window.showToast('✅ Сотрудник обновлён');
-    } else {
-      data.lab_id = user.lab_id;
-      data.is_active = true;
-      data.created_at = serverTimestamp();
-      await addDoc(collection(db, 'technicians'), data);
-      document.getElementById('mo-tech').classList.remove('op');
-      if(window.showToast)window.showToast('✅ Сотрудник добавлен');
-    }
-    window._editingTechId = null;
+    await addDoc(collection(db, 'technicians'), {
+      lab_id: user.lab_id,
+      full_name: name,
+      role: role,
+      specialization: role==='technician' ? document.getElementById('tech-spec').value.trim() : ROLE_LABELS[role],
+      phone: document.getElementById('tech-phone').value.trim(),
+      default_rate: role==='technician' ? (parseFloat(document.getElementById('tech-rate').value) || 0) : 0,
+      hire_date: document.getElementById('tech-hire').value || null,
+      is_active: true,
+      created_at: serverTimestamp(),
+    });
+    document.getElementById('mo-tech').classList.remove('op');
+    if(window.showToast)window.showToast('✅ Сотрудник добавлен');
   } catch(e) { if(window.showToast)window.showToast('Ошибка: '+e.message); }
   btn.disabled = false;
 };
 
 window.renderTechnicians = function(techs){
-  window._techsCache = techs;   // для предзаполнения формы при редактировании
   const box = document.getElementById('tech-cards');
   if (!box) return;
   const fallbackColors = [
@@ -2888,7 +2859,6 @@ window.renderTechnicians = function(techs){
         +(isTech?'<div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Ставка</span><span>'+(t.default_rate?t.default_rate+' ₽/ед.':'—')+'</span></div>':'')
         +'</div>'
         +'<div style="padding-top:9px;margin-top:9px;border-top:1px solid var(--b);text-align:right">'
-        +'<button class="btn btn-xs btn-g" onclick="openEditTech(\''+t.id+'\')">Изменить</button> '
         +'<button class="btn btn-xs btn-g" onclick="toggleTechActive(\''+t.id+'\','+(!t.is_active)+')">'+(t.is_active?'Уволить':'Вернуть')+'</button>'
         +'</div>'
         +'</div></div>';
@@ -4348,25 +4318,14 @@ window.openOrderDetail = function(orderId) {
   // Реальный номер в шапке страницы
   var pageTitle = document.getElementById('page-title');
   if(pageTitle) pageTitle.textContent = 'Заказ ' + (o.order_number || '');
-  var _wcount = (o.works && o.works.length) ? o.works.length : 1;
-  var _titleWork = (o.work_type||'—') + (_wcount > 1
-      ? ' +'+(_wcount-1)+' поз.'
-      : (o.quantity>1 ? ' ×'+o.quantity : ''));
   document.getElementById('od-title').textContent =
-    _titleWork + ' — ' + (o.patient_name||'—');
+    (o.work_type||'—') + (o.quantity>1?' ×'+o.quantity:'') + ' — ' + (o.patient_name||'—');
   document.getElementById('od-status-badge').className = 'badge ' + (badgeMap[o.status]||'bn');
   document.getElementById('od-status-badge').textContent = statusMap[o.status] || o.status;
   document.getElementById('od-clinic').textContent   = o.clinic_name || '—';
   document.getElementById('od-doctor').textContent   = (o.doctor_name||'—') + (o.doctor_phone?' · '+o.doctor_phone:'');
   document.getElementById('od-patient').textContent  = (o.patient_name||'—') + (o.patient_gender?' · '+(o.patient_gender==='male'?'Мужской':'Женский'):'');
-  // Все позиции работ заказа (а не только первая). Данные лежат в o.works.
-  var _worksArr = (o.works && o.works.length) ? o.works
-                  : [{ name: (o.work_type||'—'), qty: (o.quantity||1) }];
-  document.getElementById('od-work').innerHTML = _worksArr.map(function(w){
-    var q = (w.qty && w.qty > 1) ? ' <span style="color:var(--t2)">×'+w.qty+'</span>' : '';
-    var art = w.article ? '<span style="color:var(--t3);font-size:11px"> · '+w.article+'</span>' : '';
-    return '<div style="padding:1px 0">'+(w.name||'—')+q+art+'</div>';
-  }).join('');
+  document.getElementById('od-work').textContent     = (o.work_type||'—') + (o.quantity>1?' ×'+o.quantity:'');
   document.getElementById('od-material').textContent = [o.implant_system||o.material, o.color_vita, o.transparency||o.surface].filter(Boolean).join(' · ') || '—';
   var odDueEl = document.getElementById('od-due');
   odDueEl.textContent = (o.due_date||'—') + (o.due_time ? ' · '+o.due_time : '');
