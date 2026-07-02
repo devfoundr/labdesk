@@ -298,6 +298,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 .toast.sh{opacity:1}
 /* dynamic order stages */
 .ord-stage{border:1px solid var(--b);border-radius:var(--rs);margin-bottom:6px;overflow:hidden;background:var(--sf)}
+#ord-stages-list .ord-stage:first-child{margin-top:6px}
 .ord-tab{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--bm);background:var(--sf);border-radius:var(--rs);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .12s;white-space:nowrap;font-family:inherit}
 .ord-tab:hover{border-color:var(--pu)}
 .ord-tab-ac{background:var(--pu);color:#fff;border-color:var(--pu)}
@@ -3125,7 +3126,14 @@ window.renderPriceList = function(items){
     if (!cats[c]) cats[c] = [];
     cats[c].push(it);
   });
-  box.innerHTML = Object.keys(cats).sort().map(cat => {
+  // Категории упорядочиваем по их минимальному артикулу (а не по алфавиту),
+  // чтобы весь прайс шёл по возрастанию артикула: 01xx → 02xx → …
+  const catMinArt = {};
+  Object.keys(cats).forEach(c => {
+    catMinArt[c] = cats[c].reduce((m,it)=>{ var a=(it.article||'\uffff'); return a<m?a:m; }, '\uffff');
+  });
+  const sortedCats = Object.keys(cats).sort((a,b)=> catMinArt[a].localeCompare(catMinArt[b]));
+  box.innerHTML = sortedCats.map(cat => {
     const rows = cats[cat].sort((a,b)=>(a.article||'').localeCompare(b.article||'')).map(it =>
       '<div class="pr">'
       +'<span class="pr-art">'+(it.article||'—')+'</span>'
