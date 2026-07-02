@@ -2035,7 +2035,7 @@ function renderOrdStages(){
       +'</div>';
     // drag
     wrap.addEventListener('dragstart',function(){_dragOrdEl=wrap;setTimeout(function(){wrap.style.opacity='.4';},0);});
-    wrap.addEventListener('dragend',function(){wrap.style.opacity='';_dragOrdEl=null;reindexOrdStages();renderOrdStages();});
+    wrap.addEventListener('dragend',function(){wrap.style.opacity='';_dragOrdEl=null;reindexOrdStages();if(window.persistStageOrder)window.persistStageOrder();renderOrdStages();});
     wrap.addEventListener('dragover',function(e){e.preventDefault();if(_dragOrdEl&&_dragOrdEl!==wrap){var par=wrap.parentNode;var els=[...par.children];var fi=els.indexOf(_dragOrdEl),ti=els.indexOf(wrap);if(fi<ti)wrap.after(_dragOrdEl);else wrap.before(_dragOrdEl);}});
     cont.appendChild(wrap);
   });
@@ -2082,6 +2082,7 @@ async function removeOrdStage(i){
   }
   _ordStages.splice(i,1);
   renderOrdStages();
+  if(window.persistStageOrder) window.persistStageOrder();   // пересчёт sort_order после удаления
   showToast('Этап удалён');
 }
 function rollbackOrd(fromGi,toGi){
@@ -2117,6 +2118,7 @@ async function addOrdStage(){
   }
   cM('mo-stage');
   renderOrdStages();
+  if(window.persistStageOrder) window.persistStageOrder();
   showToast('Добавлен: '+name);
 }
 // keep legacy stubs for old references
@@ -4513,6 +4515,23 @@ window.deleteStageFromFirestore = async function(stageId) {
   } catch(e) {
     console.error('Delete stage error:', e);
     window.showToast('Ошибка удаления: ' + e.message);
+  }
+};
+
+// ── Сохранение порядка этапов после перетаскивания ──
+window.persistStageOrder = async function() {
+  const orderId = window._currentOrderId;
+  if (!orderId || !window._ordStages) return;
+  try {
+    for (let idx = 0; idx < window._ordStages.length; idx++) {
+      const s = window._ordStages[idx];
+      if (s && s.id && s.sort_order !== idx) {
+        await updateDoc(doc(db, 'stages', s.id), { sort_order: idx });
+        s.sort_order = idx;
+      }
+    }
+  } catch(e) {
+    console.warn('Persist stage order failed:', e);
   }
 };
 
