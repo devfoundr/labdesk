@@ -298,6 +298,11 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 .toast.sh{opacity:1}
 /* dynamic order stages */
 .ord-stage{border:1px solid var(--b);border-radius:var(--rs);margin-bottom:6px;overflow:hidden;background:var(--sf)}
+.ord-tab{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--b);background:var(--sf);border-radius:100px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .12s;white-space:nowrap}
+.ord-tab:hover{border-color:var(--pu);color:var(--put)}
+.ord-tab-ac{background:var(--pub);border-color:var(--pu);color:var(--put)}
+.ord-tab-cnt{font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;background:var(--bg);color:var(--t3)}
+.ord-tab-ac .ord-tab-cnt{background:var(--pu);color:#fff}
 .ord-stage-head{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;user-select:none;transition:background .1s}
 .ord-stage-head:hover{background:var(--bg)}
 .ord-drag{color:var(--t3);cursor:grab;font-size:16px;flex-shrink:0;padding:0 2px}
@@ -553,6 +558,7 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
             </button>
           </div>
         </div>
+        <div id="ord-stages-tabs" style="display:none;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
         <div id="ord-stages-list" style="display:flex;flex-direction:column"></div>
       </div>
     </div>
@@ -1911,16 +1917,66 @@ var _snLabel={done:'✓',active:'▶',idle:'',problem:'!',check:'?'};
 var _techData=[];  // заполняется из Firestore
 var _dragOrdEl=null;
 
+// Определяет активную вкладку и видимые этапы (с сохранением глобальных индексов gi)
+function _ordVisibleStages(){
+  var works = (window._openOrderObj && window._openOrderObj.works) ? window._openOrderObj.works : [];
+  if(works.length < 2){
+    return { tabbed:false, works:works, activeArt:null,
+             visible:_ordStages.map(function(s,gi){return {s:s,gi:gi};}) };
+  }
+  var arts = works.map(function(w){return w.article;});
+  var firstArt = arts[0];
+  var activeArt = window._activeWorkTab;
+  if(arts.indexOf(activeArt) < 0) activeArt = firstArt;
+  window._activeWorkTab = activeArt;
+  var visible = [];
+  _ordStages.forEach(function(s,gi){
+    var a = s.work_art || '';
+    // этап показывается на вкладке своей работы; старые этапы без привязки — на первой вкладке
+    if(a === activeArt || (!a && activeArt === firstArt)) visible.push({s:s,gi:gi});
+  });
+  return { tabbed:true, works:works, activeArt:activeArt, visible:visible };
+}
+
+function renderStageTabs(info){
+  var tabsEl=document.getElementById('ord-stages-tabs');
+  if(!tabsEl) return;
+  if(!info.tabbed){ tabsEl.style.display='none'; tabsEl.innerHTML=''; return; }
+  tabsEl.style.display='flex';
+  var arts=info.works.map(function(w){return w.article;});
+  var firstArt=arts[0];
+  tabsEl.innerHTML=info.works.map(function(w){
+    var art=w.article;
+    var mine=_ordStages.filter(function(s){var a=s.work_art||''; return a===art || (!a && art===firstArt);});
+    var done=mine.filter(function(s){return s.status==='done';}).length;
+    var nm=w.name||art||'—';
+    var short=nm.length>22 ? nm.slice(0,21)+'…' : nm;
+    var active=(art===info.activeArt);
+    var safeArt=String(art==null?'':art).replace(/'/g,"\\'");
+    var safeTitle=nm.replace(/"/g,'&quot;');
+    return '<button class="ord-tab'+(active?' ord-tab-ac':'')+'" title="'+safeTitle+'" onclick="selectStageTab(\''+safeArt+'\')">'
+      +short+' <span class="ord-tab-cnt">'+done+'/'+mine.length+'</span></button>';
+  }).join('');
+}
+
+function selectStageTab(art){ window._activeWorkTab=art; renderOrdStages(); }
+
 function renderOrdStages(){
   var cont=document.getElementById('ord-stages-list');
   if(!cont)return;
+  var info=_ordVisibleStages();
+  renderStageTabs(info);
   cont.innerHTML='';
-  _ordStages.forEach(function(s,i){
+  if(!info.visible.length){
+    cont.innerHTML='<div style="font-size:13px;color:var(--t3);text-align:center;padding:20px">Для этой позиции этапов нет — нажмите «Добавить этап»</div>';
+    return;
+  }
+  info.visible.forEach(function(v, li){
+    var s=v.s, i=v.gi, localNum=li+1;
     var sn=_snClass[s.status]||'w';
-    var snL=_snLabel[s.status]||(i+1);
+    var snL=_snLabel[s.status]||localNum;
     var bClass=_statusBadge[s.status]||'bwa';
     var bLabel=_statusMap[s.status]||'Не начат';
-    var techLabel=s.tech||'— не назначен —';
     var deadlineStr=s.deadline?(' · до '+s.deadline):'';
     var wrap=document.createElement('div');
     wrap.className='ord-stage';
@@ -1934,17 +1990,17 @@ function renderOrdStages(){
         +'<div class="tc2-info"><div class="tc2-name">'+t.name+'</div><div class="tc2-role">'+t.role+'</div></div>'
         +'<div class="tc2-load">'+t.load+' зак.</div></div>';
     }).join('');
-    // rollback buttons from current stage
-    var rbBtns=_ordStages.slice(0,i).map(function(rs,ri){
-      return '<div class="rb-btn" onclick="rollbackOrd('+i+','+ri+')">← '+rs.name+'</div>';
+    // откат — только в рамках текущей вкладки (предыдущие видимые этапы)
+    var rbBtns=info.visible.slice(0,li).map(function(pv){
+      return '<div class="rb-btn" onclick="rollbackOrd('+i+','+pv.gi+')">← '+pv.s.name+'</div>';
     }).join('');
-    var rollbackBlock=i>0?('<div class="rollback-strip" style="margin-top:8px"><strong>🔄 Откатить на:</strong><div class="rb-btns">'+rbBtns+'</div></div>'):'';
+    var rollbackBlock=li>0?('<div class="rollback-strip" style="margin-top:8px"><strong>🔄 Откатить на:</strong><div class="rb-btns">'+rbBtns+'</div></div>'):'';
     wrap.innerHTML=
       '<div class="ord-stage-head" onclick="tgOrdS('+i+')">'
         +'<div class="ord-drag" onclick="event.stopPropagation()">⠿</div>'
-        +'<div class="ord-sn '+sn+'">'+(sn==='w'?i+1:snL)+'</div>'
+        +'<div class="ord-sn '+sn+'">'+(sn==='w'?localNum:snL)+'</div>'
         +'<div class="ord-stage-info">'
-          +'<div class="ord-stage-name">'+(i+1)+'. '+s.name+'</div>'
+          +'<div class="ord-stage-name">'+localNum+'. '+s.name+'</div>'
           +'<div class="ord-stage-meta">'
             +(s.tech?'<span>'+s.tech+'</span>':'<span style="color:var(--re)">Техник не назначен</span>')
             +'<span>'+s.days+' дн.'+deadlineStr+'</span>'
@@ -1985,8 +2041,11 @@ function renderOrdStages(){
 }
 function reindexOrdStages(){
   var rows=[...document.getElementById('ord-stages-list').children];
-  var newArr=rows.map(function(r){return _ordStages[+r.dataset.idx];});
-  _ordStages.length=0;newArr.forEach(function(s){_ordStages.push(s);});
+  var visIdx=rows.map(function(r){return +r.dataset.idx;});      // видимые глоб. индексы в новом порядке
+  if(visIdx.length<=1) return;
+  var positions=visIdx.slice().sort(function(a,b){return a-b;}); // позиции, которые они занимают в _ordStages
+  var reordered=visIdx.map(function(gi){return _ordStages[gi];});
+  positions.forEach(function(pos,k){ _ordStages[pos]=reordered[k]; }); // скрытые этапы остаются на своих местах
 }
 function tgOrdS(i){var b=document.getElementById('osb-'+i);if(b)b.classList.toggle('op');}
 function setOrdStatus(i,st){
@@ -2024,18 +2083,35 @@ async function removeOrdStage(i){
   renderOrdStages();
   showToast('Этап удалён');
 }
-function rollbackOrd(from,to){_ordStages[to].status='active';for(var k=to+1;k<=from;k++)_ordStages[k].status='idle';renderOrdStages();showToast('Откат на этап '+(to+1)+': '+_ordStages[to].name);}
+function rollbackOrd(fromGi,toGi){
+  var to=_ordStages[toGi]; if(!to) return;
+  var art=to.work_art||'';
+  to.status='active';
+  _ordStages.forEach(function(s,gi){
+    if((s.work_art||'')===art && gi>toGi && gi<=fromGi) s.status='idle';
+  });
+  renderOrdStages();
+  showToast('Откат на этап: '+to.name);
+}
 function openAddStageModal(){document.getElementById('mo-stage-sel').value='';document.getElementById('mo-stage-name').value='';document.getElementById('mo-stage').classList.add('op');}
 async function addOrdStage(){
   var sel=document.getElementById('mo-stage-sel').value;
   var nm=document.getElementById('mo-stage-name').value.trim();
   var name=nm||sel;
   if(!name){showToast('Введите название этапа');return;}
-  var newStage={name:name,days:1,tech:'',status:'idle',comment:''};
+  // привязка к активной вкладке-позиции (если заказ многопозиционный)
+  var info=_ordVisibleStages();
+  var wa='', wn='';
+  if(info.tabbed){
+    wa=info.activeArt||'';
+    var w=(info.works||[]).find(function(x){return x.article===wa;});
+    wn=w?(w.name||''):'';
+  }
+  var newStage={name:name,days:1,tech:'',status:'idle',comment:'',work_art:wa,work_name:wn};
   _ordStages.push(newStage);
   // Сохраняем в Firestore
   if(window.addStageToFirestore){
-    var newId=await window.addStageToFirestore(name);
+    var newId=await window.addStageToFirestore(name, wa, wn);
     if(newId) _ordStages[_ordStages.length-1].id=newId;
   }
   cM('mo-stage');
@@ -3647,18 +3723,20 @@ window.saveLabOrder = async function(){
       created_at: serverTimestamp(),
     });
 
-    // Автоматически создаём этапы производства из шаблона категории основной работы
+    // Автоматически создаём этапы производства — для КАЖДОЙ позиции из шаблона её категории
     try {
-      var mainArt = mainWork.art || (works[0] && works[0].article);
-      var mainWorkObj = (window._allWorks||[]).find(function(x){return x.art===mainArt;});
-      var cat = mainWorkObj && (mainWorkObj.cat || mainWorkObj.category);
-      if(cat){
+      var soCounter = 0;
+      for(var wi=0; wi<works.length; wi++){
+        var wobj = works[wi];
+        var wart = wobj.art;
+        var wname = wobj.name || '';
+        var wfull = (window._allWorks||[]).find(function(x){return x.art===wart;});
+        var cat = wfull && (wfull.cat || wfull.category);
+        if(!cat) continue;
         var tplStages = null;
-        // Берём из кэша если есть
         if(window._tplCache && window._tplCache[cat] && window._tplCache[cat].stages && window._tplCache[cat].stages.length){
           tplStages = window._tplCache[cat].stages;
         } else {
-          // Иначе грузим шаблон категории из базы
           var tq = query(collection(db,'stage_templates'), where('lab_id','==',user.lab_id), where('category','==',cat));
           var tsnap = await getDocs(tq);
           if(!tsnap.empty){ tplStages = tsnap.docs[0].data().stages||[]; }
@@ -3677,7 +3755,9 @@ window.saveLabOrder = async function(){
               days_planned: stDays,
               comment: '',
               due_date: null,
-              sort_order: si,
+              sort_order: soCounter++,
+              work_art: wart,
+              work_name: wname,
               created_at: serverTimestamp(),
             });
           }
@@ -4308,6 +4388,8 @@ window.loadStagesFromFirestore = async function(orderId) {
         comment: d.data().comment || '',
         deadline: d.data().due_date || '',
         sort_order: d.data().sort_order || 0,
+        work_art: d.data().work_art || '',
+        work_name: d.data().work_name || '',
       }));
       window._ordStages.sort((a,b) => (a.sort_order||0) - (b.sort_order||0));
     } else {
@@ -4351,6 +4433,8 @@ window.saveStageToFirestore = async function(idx) {
         comment: s.comment || '',
         due_date: s.deadline || null,
         sort_order: idx,
+        work_art: s.work_art || '',
+        work_name: s.work_name || '',
       });
     } else {
       // Создаём новый
@@ -4364,6 +4448,8 @@ window.saveStageToFirestore = async function(idx) {
         comment: s.comment || '',
         due_date: s.deadline || null,
         sort_order: idx,
+        work_art: s.work_art || '',
+        work_name: s.work_name || '',
         created_at: serverTimestamp(),
       });
       window._ordStages[idx].id = ref.id;
@@ -4407,7 +4493,7 @@ window.deleteStageFromFirestore = async function(stageId) {
 };
 
 // ── Добавление нового этапа в Firestore ──
-window.addStageToFirestore = async function(stageName) {
+window.addStageToFirestore = async function(stageName, workArt, workName) {
   const orderId = window._currentOrderId;
   if (!orderId) return null;
   const user = window.LabDesk.currentUser;
@@ -4422,6 +4508,8 @@ window.addStageToFirestore = async function(stageName) {
       comment: '',
       due_date: null,
       sort_order: window._ordStages.length,
+      work_art: workArt || '',
+      work_name: workName || '',
       created_at: serverTimestamp(),
     });
     return ref.id;
@@ -4466,6 +4554,7 @@ window.openOrderDetail = function(orderId) {
   window._currentOrderId = orderId;
   o.id = orderId;
   window._openOrderObj = o;   // для кнопки «Изменить»
+  window._activeWorkTab = null;   // сброс активной вкладки этапов
 
   const statusMap = { new:'Новый', in_progress:'В работе', done:'Готово', returned:'Переделка', waiting:'На проверке' };
   const badgeMap  = { new:'bn', in_progress:'bw', done:'bg', returned:'br', waiting:'bch' };
