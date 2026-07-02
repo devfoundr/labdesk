@@ -625,8 +625,17 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
     <div class="mh2"><div class="mh2-t">Добавить услугу</div><button class="mcl" onclick="cM('mo-price')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="mbody">
       <div class="fr">
-        <div class="fd"><label>Артикул</label><input type="text" id="price-article" placeholder="0101"></div>
-        <div class="fd"><label>Категория</label><input type="text" id="price-category" placeholder="Металлокерамика"></div>
+        <div class="fd"><label>Категория</label>
+          <select id="price-category-sel" onchange="onPriceCatChange()">
+            <option value="">— выберите —</option>
+          </select>
+        </div>
+        <div class="fd"><label>Артикул <span style="color:var(--t3);font-weight:400;font-size:11px">— авто</span></label>
+          <input type="text" id="price-article" placeholder="—" readonly style="background:var(--bg);color:var(--t2);cursor:not-allowed"></div>
+      </div>
+      <div class="fd" id="price-newcat-wrap" style="display:none">
+        <label>Название новой категории</label>
+        <input type="text" id="price-category-new" placeholder="Например: Циркониевые коронки" oninput="onPriceCatChange()">
       </div>
       <div class="fd"><label>Название работы</label><input type="text" id="price-name" placeholder="Коронка металлокерамика"></div>
       <div class="fr">
@@ -3084,11 +3093,93 @@ window.subscribeTechnicians = function(labId){
 // ── Прайс услуг ──
 window._priceCache = {};
 
+// Вычисляет следующий артикул для категории: префикс (2 цифры) + порядковый номер.
+// Префикс берётся из существующих артикулов этой категории; для новой категории —
+// следующий свободный двузначный префикс. Номер = максимальный в этом префиксе + 1.
+window.computeNextArticle = function(category){
+  var works = window._allWorks || [];
+  var prefix = null;
+  // 1) префикс из существующих позиций этой категории
+  for(var i=0;i<works.length;i++){
+    if((works[i].cat||'') === category){
+      var m0 = (works[i].art||'').trim().match(/^(\d{2})(\d+)$/);
+      if(m0){ prefix = m0[1]; break; }
+    }
+  }
+  // 2) новая категория → следующий свободный префикс
+  if(!prefix){
+    var used = {};
+    works.forEach(function(w){ var m=(w.art||'').trim().match(/^(\d{2})\d+$/); if(m) used[m[1]]=true; });
+    var n = 1;
+    while(used[String(n).padStart(2,'0')]) n++;
+    prefix = String(n).padStart(2,'0');
+  }
+  // 3) следующий порядковый номер в этом префиксе
+  var maxSeq = 0;
+  works.forEach(function(w){
+    var m = (w.art||'').trim().match(/^(\d{2})(\d+)$/);
+    if(m && m[1]===prefix){ var s=parseInt(m[2],10); if(s>maxSeq) maxSeq=s; }
+  });
+  return prefix + String(maxSeq+1).padStart(2,'0');
+};
+
+// Заполняет выпадающий список категорий (существующие из прайса + «новая»)
+window._fillPriceCats = function(selectedCat){
+  var sel = document.getElementById('price-category-sel');
+  if(!sel) return;
+  var works = window._allWorks || [];
+  var cats = [...new Set(works.map(w=>w.cat).filter(Boolean))];
+  if(selectedCat && cats.indexOf(selectedCat)<0) cats.push(selectedCat);
+  var prefOf = {};
+  works.forEach(function(w){ var m=(w.art||'').match(/^(\d{2})\d+$/); if(m && !prefOf[w.cat]) prefOf[w.cat]=m[1]; });
+  cats.sort(function(a,b){ return (prefOf[a]||'99').localeCompare(prefOf[b]||'99'); });
+  sel.innerHTML = '<option value="">— выберите —</option>'
+    + cats.map(c=>'<option value="'+c.replace(/"/g,'&quot;')+'">'+c+'</option>').join('')
+    + '<option value="__new__">➕ Новая категория…</option>';
+  sel.value = selectedCat || '';
+};
+
+window.onPriceCatChange = function(){
+  var sel = document.getElementById('price-category-sel');
+  var wrap = document.getElementById('price-newcat-wrap');
+  var cat;
+  if(sel.value === '__new__'){
+    wrap.style.display = 'block';
+    cat = (document.getElementById('price-category-new').value||'').trim();
+  } else {
+    wrap.style.display = 'none';
+    cat = sel.value;
+  }
+  if(window._editingPriceId) return;   // при редактировании артикул не пересчитываем (он фиксирован)
+  document.getElementById('price-article').value = cat ? window.computeNextArticle(cat) : '';
+};
+
 window.openAddPrice = function(){
-  ['price-article','price-category','price-name','price-cost','price-days','price-rate'].forEach(id=>{
+  window._editingPriceId = null;   // режим создания
+  ['price-name','price-cost','price-days','price-rate','price-category-new','price-article'].forEach(id=>{
     var el=document.getElementById(id); if(el) el.value='';
   });
-  document.getElementById('btn-save-price').disabled=false;
+  window._fillPriceCats('');
+  document.getElementById('price-newcat-wrap').style.display='none';
+  var t=document.querySelector('#mo-price .mh2-t'); if(t) t.textContent='Добавить услугу';
+  var b=document.getElementById('btn-save-price'); if(b){ b.disabled=false; b.textContent='Добавить'; }
+  document.getElementById('mo-price').classList.add('op');
+};
+
+window.openEditPrice = function(id){
+  var it = (window._priceCache||{})[id];
+  if(!it){ window.showToast('Позиция не найдена'); return; }
+  window._editingPriceId = id;   // режим редактирования
+  window._fillPriceCats(it.category||'');
+  document.getElementById('price-newcat-wrap').style.display='none';
+  document.getElementById('price-category-new').value='';
+  document.getElementById('price-article').value = it.article || '';   // артикул фиксирован
+  document.getElementById('price-name').value = it.name || '';
+  document.getElementById('price-cost').value = it.price || '';
+  document.getElementById('price-days').value = it.days_default || '';
+  document.getElementById('price-rate').value = it.tech_rate || '';
+  var t=document.querySelector('#mo-price .mh2-t'); if(t) t.textContent='Изменить услугу';
+  var b=document.getElementById('btn-save-price'); if(b){ b.disabled=false; b.textContent='Сохранить'; }
   document.getElementById('mo-price').classList.add('op');
 };
 
@@ -3096,22 +3187,43 @@ window.savePrice = async function(){
   const user = window.LabDesk.currentUser;
   const name = document.getElementById('price-name').value.trim();
   if (!name) { window.showToast('Введите название услуги'); return; }
+  const sel = document.getElementById('price-category-sel');
+  const category = (sel.value === '__new__')
+    ? document.getElementById('price-category-new').value.trim()
+    : sel.value;
+  if (!category) { window.showToast('Выберите или введите категорию'); return; }
   const btn = document.getElementById('btn-save-price');
   btn.disabled = true;
+  const editId = window._editingPriceId || null;
   try {
-    await addDoc(collection(db, 'work_types'), {
-      lab_id: user.lab_id,
-      article: document.getElementById('price-article').value.trim(),
-      name: name,
-      category: document.getElementById('price-category').value.trim() || 'Без категории',
-      price: parseFloat(document.getElementById('price-cost').value) || 0,
-      days_default: parseInt(document.getElementById('price-days').value) || 1,
-      tech_rate: parseFloat(document.getElementById('price-rate').value) || 0,
-      is_active: true,
-      created_at: serverTimestamp(),
-    });
+    if (editId) {
+      // Редактирование — артикул не трогаем
+      await updateDoc(doc(db, 'work_types', editId), {
+        name: name,
+        category: category,
+        price: parseFloat(document.getElementById('price-cost').value) || 0,
+        days_default: parseInt(document.getElementById('price-days').value) || 1,
+        tech_rate: parseFloat(document.getElementById('price-rate').value) || 0,
+        updated_at: serverTimestamp(),
+      });
+      window.showToast('✅ Услуга обновлена');
+    } else {
+      const article = window.computeNextArticle(category);   // пересчёт на момент сохранения
+      await addDoc(collection(db, 'work_types'), {
+        lab_id: user.lab_id,
+        article: article,
+        name: name,
+        category: category,
+        price: parseFloat(document.getElementById('price-cost').value) || 0,
+        days_default: parseInt(document.getElementById('price-days').value) || 1,
+        tech_rate: parseFloat(document.getElementById('price-rate').value) || 0,
+        is_active: true,
+        created_at: serverTimestamp(),
+      });
+      window.showToast('✅ Услуга добавлена · артикул ' + article);
+    }
+    window._editingPriceId = null;
     document.getElementById('mo-price').classList.remove('op');
-    window.showToast('✅ Услуга добавлена');
   } catch(e) { window.showToast('Ошибка: '+e.message); }
   btn.disabled = false;
 };
@@ -3152,7 +3264,7 @@ window.renderPriceList = function(items){
       +'<span><input class="pri" value="'+(it.price||0)+'" onchange="updatePriceField(\''+it.id+'\',\'price\',this.value)"></span>'
       +'<span><input class="pri" value="'+(it.days_default||1)+'" onchange="updatePriceField(\''+it.id+'\',\'days_default\',this.value)"></span>'
       +'<span><input class="pri" value="'+(it.tech_rate||0)+'" onchange="updatePriceField(\''+it.id+'\',\'tech_rate\',this.value)"></span>'
-      +'<span><button class="btn btn-xs btn-g" onclick="deletePriceItem(\''+it.id+'\')">✕</button></span>'
+      +'<span style="display:flex;gap:4px;justify-content:flex-end"><button class="btn btn-xs btn-g" onclick="openEditPrice(\''+it.id+'\')" title="Изменить">✎</button><button class="btn btn-xs btn-g" onclick="deletePriceItem(\''+it.id+'\')" title="Удалить">✕</button></span>'
       +'</div>'
     ).join('');
     return '<div class="pc"><div class="pc-h" onclick="tgPC(this)"><div class="pc-t">'+cat+'</div><span style="font-size:12px;color:var(--t3)">▾</span></div>'
