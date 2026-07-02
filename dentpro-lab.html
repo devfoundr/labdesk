@@ -298,11 +298,11 @@ tbody td{padding:9px 16px;font-size:13px;vertical-align:middle}
 .toast.sh{opacity:1}
 /* dynamic order stages */
 .ord-stage{border:1px solid var(--b);border-radius:var(--rs);margin-bottom:6px;overflow:hidden;background:var(--sf)}
-.ord-tab{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--b);background:var(--sf);border-radius:100px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .12s;white-space:nowrap}
-.ord-tab:hover{border-color:var(--pu);color:var(--put)}
-.ord-tab-ac{background:var(--pub);border-color:var(--pu);color:var(--put)}
+.ord-tab{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--bm);background:var(--sf);border-radius:var(--rs);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .12s;white-space:nowrap;font-family:inherit}
+.ord-tab:hover{border-color:var(--pu)}
+.ord-tab-ac{background:var(--pu);color:#fff;border-color:var(--pu)}
 .ord-tab-cnt{font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;background:var(--bg);color:var(--t3)}
-.ord-tab-ac .ord-tab-cnt{background:var(--pu);color:#fff}
+.ord-tab-ac .ord-tab-cnt{background:rgba(255,255,255,.25);color:#fff}
 .ord-stage-head{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;user-select:none;transition:background .1s}
 .ord-stage-head:hover{background:var(--bg)}
 .ord-drag{color:var(--t3);cursor:grab;font-size:16px;flex-shrink:0;padding:0 2px}
@@ -3740,6 +3740,13 @@ window.saveLabOrder = async function(){
           var tq = query(collection(db,'stage_templates'), where('lab_id','==',user.lab_id), where('category','==',cat));
           var tsnap = await getDocs(tq);
           if(!tsnap.empty){ tplStages = tsnap.docs[0].data().stages||[]; }
+        }
+        // Если сохранённого шаблона нет — берём дефолтные этапы (как на экране «Шаблоны»)
+        if((!tplStages || !tplStages.length) && typeof window.defaultStagesForCategory==='function'){
+          var defNames = window.defaultStagesForCategory(cat) || [];
+          tplStages = defNames.map(function(nm){
+            return { name:nm, days:((window._defDays && window._defDays[nm]) || 1) };
+          });
         }
         if(tplStages && tplStages.length){
           for(var si=0; si<tplStages.length; si++){
