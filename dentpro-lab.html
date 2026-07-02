@@ -2388,7 +2388,11 @@ window.loadTplCategories = async function(){
     }
     box.innerHTML = window._tplCategories.map(function(cat){
       var safe = cat.replace(/"/g,'&quot;').replace(/'/g,"\\'");
-      return '<div class="tpl-wt" onclick="loadTpl(\''+safe+'\',this)">'+cat+'</div>';
+      var mn = catMinArt[cat] || '';
+      var pref = /^\d{2}/.test(mn) ? mn.slice(0,2) : '—';
+      return '<div class="tpl-wt" onclick="loadTpl(\''+safe+'\',this)">'
+        + '<span style="color:var(--t3);font-weight:700;font-size:11px;margin-right:7px">'+pref+'</span>'
+        + cat + '</div>';
     }).join('');
     var first = box.querySelector('.tpl-wt');
     if(first) loadTpl(window._tplCategories[0], first);
