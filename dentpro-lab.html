@@ -2361,8 +2361,17 @@ window.loadTplCategories = async function(){
     var pq = query(collection(window.db,'work_types'), where('lab_id','==',user.lab_id));
     var psnap = await getDocs(pq);
     var catSet = {};
-    psnap.docs.forEach(function(d){ var c=d.data().category||'Без категории'; catSet[c]=true; });
-    window._tplCategories = Object.keys(catSet).sort();
+    var catMinArt = {};
+    psnap.docs.forEach(function(d){
+      var c = d.data().category || 'Без категории';
+      var a = d.data().article || '\uffff';
+      catSet[c] = true;
+      if(catMinArt[c] === undefined || a < catMinArt[c]) catMinArt[c] = a;
+    });
+    // Категории сортируем по минимальному артикулу (как в прайсе), а не по алфавиту
+    window._tplCategories = Object.keys(catSet).sort(function(a,b){
+      return (catMinArt[a]||'\uffff').localeCompare(catMinArt[b]||'\uffff');
+    });
 
     window._tplCache = {};
     try {
