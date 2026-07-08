@@ -3280,10 +3280,40 @@ window.renderPriceList = function(items){
       +'<span style="display:flex;gap:4px;justify-content:flex-end"><button class="btn btn-xs btn-g" onclick="openEditPrice(\''+it.id+'\')" title="Изменить">✎</button><button class="btn btn-xs btn-g" onclick="deletePriceItem(\''+it.id+'\')" title="Удалить">✕</button></span>'
       +'</div>'
     ).join('');
-    return '<div class="pc"><div class="pc-h" onclick="tgPC(this)"><div class="pc-t">'+cat+'</div><span style="font-size:12px;color:var(--t3)">▾</span></div>'
+    var catEsc = String(cat).replace(/\\/g,'\\\\').replace(/"/g,'&quot;').replace(/'/g,"\\'");
+    return '<div class="pc"><div class="pc-h" onclick="tgPC(this)"><div class="pc-t">'+cat+'</div>'
+      +'<div style="display:flex;align-items:center;gap:8px">'
+      +'<button class="btn btn-xs btn-g" onclick="event.stopPropagation();renameCategory(\''+catEsc+'\')" title="Переименовать категорию">✎</button>'
+      +'<span style="font-size:12px;color:var(--t3)">▾</span></div></div>'
       +'<div><div class="pr prh"><span>Артикул</span><span>Название работы</span><span>Стоимость (₽)</span><span>Срок (дни)</span><span>Ставка технику</span><span></span></div>'
       +rows+'</div></div>';
   }).join('');
+};
+
+// Переименование категории: обновляет поле category у ВСЕХ позиций этой категории
+// и переносит сохранённый шаблон этапов на новое имя. Артикулы не меняются.
+window.renameCategory = async function(oldCat){
+  var newName = prompt('Новое название категории:', oldCat);
+  if(newName === null) return;
+  newName = newName.trim();
+  if(!newName || newName === oldCat) return;
+  var user = window.LabDesk.currentUser;
+  var items = (window._allWorksFull||[]).filter(it => (it.category||'') === oldCat);
+  var exists = (window._allWorksFull||[]).some(it => (it.category||'') === newName);
+  if(exists && !confirm('Категория «'+newName+'» уже существует. Объединить позиции «'+oldCat+'» в неё?')) return;
+  if(!confirm('Переименовать «'+oldCat+'» → «'+newName+'»? Затронет позиций: '+items.length)) return;
+  try {
+    for(var i=0;i<items.length;i++){
+      await updateDoc(doc(db,'work_types', items[i].id), { category: newName });
+    }
+    // переносим сохранённый шаблон этапов (если есть)
+    var tq = query(collection(db,'stage_templates'), where('lab_id','==',user.lab_id), where('category','==',oldCat));
+    var tsnap = await getDocs(tq);
+    for(var j=0;j<tsnap.docs.length;j++){
+      await updateDoc(doc(db,'stage_templates', tsnap.docs[j].id), { category: newName });
+    }
+    window.showToast('✅ Категория переименована · позиций: '+items.length);
+  } catch(e){ window.showToast('Ошибка: '+e.message); }
 };
 
 window.updatePriceField = async function(id, field, value){
