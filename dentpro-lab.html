@@ -3109,31 +3109,42 @@ window._priceCache = {};
 // Вычисляет следующий артикул для категории: префикс (2 цифры) + порядковый номер.
 // Префикс берётся из существующих артикулов этой категории; для новой категории —
 // следующий свободный двузначный префикс. Номер = максимальный в этом префиксе + 1.
-window.computeNextArticle = function(category){
-  var works = window._allWorks || [];
-  var prefix = null;
-  // 1) префикс из существующих позиций этой категории
+// Префикс категории: из существующих позиций этой категории, иначе — следующий
+// свободный двузначный префикс (учитывая и счётчики, чтобы не переиспользовать чужой).
+window._resolvePrefix = function(category, works){
   for(var i=0;i<works.length;i++){
     if((works[i].cat||'') === category){
       var m0 = (works[i].art||'').trim().match(/^(\d{2})(\d+)$/);
-      if(m0){ prefix = m0[1]; break; }
+      if(m0) return m0[1];
     }
   }
-  // 2) новая категория → следующий свободный префикс
-  if(!prefix){
-    var used = {};
-    works.forEach(function(w){ var m=(w.art||'').trim().match(/^(\d{2})\d+$/); if(m) used[m[1]]=true; });
-    var n = 1;
-    while(used[String(n).padStart(2,'0')]) n++;
-    prefix = String(n).padStart(2,'0');
-  }
-  // 3) следующий порядковый номер в этом префиксе
+  var used = {};
+  works.forEach(function(w){ var m=(w.art||'').trim().match(/^(\d{2})\d+$/); if(m) used[m[1]]=true; });
+  var ctr = (window.LabDesk.labData && window.LabDesk.labData.article_counters) || {};
+  Object.keys(ctr).forEach(function(p){ used[p]=true; });
+  var n = 1;
+  while(used[String(n).padStart(2,'0')]) n++;
+  return String(n).padStart(2,'0');
+};
+// Максимальный порядковый номер среди существующих артикулов с этим префиксом.
+window._maxSeqForPrefix = function(prefix, works){
   var maxSeq = 0;
   works.forEach(function(w){
     var m = (w.art||'').trim().match(/^(\d{2})(\d+)$/);
     if(m && m[1]===prefix){ var s=parseInt(m[2],10); if(s>maxSeq) maxSeq=s; }
   });
-  return prefix + String(maxSeq+1).padStart(2,'0');
+  return maxSeq;
+};
+// Следующий артикул = префикс + max(счётчик категории, макс. существующий) + 1.
+// Счётчик хранится в документе лаборатории (article_counters) и никогда не откатывается,
+// поэтому удалённые номера (даже «хвостовые») повторно не выдаются.
+window.computeNextArticle = function(category){
+  var works = window._allWorks || [];
+  var prefix = window._resolvePrefix(category, works);
+  var maxExisting = window._maxSeqForPrefix(prefix, works);
+  var ctr = (window.LabDesk.labData && window.LabDesk.labData.article_counters) || {};
+  var counter = ctr[prefix] || 0;
+  return prefix + String(Math.max(maxExisting, counter) + 1).padStart(2,'0');
 };
 
 // Заполняет выпадающий список категорий (существующие из прайса + «новая»)
@@ -3221,7 +3232,28 @@ window.savePrice = async function(){
       });
       window.showToast('✅ Услуга обновлена');
     } else {
-      const article = window.computeNextArticle(category);   // пересчёт на момент сохранения
+      // Артикул через транзакцию: увеличиваем сквозной счётчик категории в документе лаборатории,
+      // чтобы номера никогда не переиспользовались (даже после удаления хвоста).
+      const labRefA = doc(db, 'labs', user.lab_id);
+      let article = '', usedPrefix = '', usedSeq = 0;
+      await runTransaction(db, async (tx) => {
+        const snap = await tx.get(labRefA);
+        const data = snap.exists() ? snap.data() : {};
+        const counters = Object.assign({}, data.article_counters || {});
+        const works = window._allWorks || [];
+        const prefix = window._resolvePrefix(category, works);
+        const maxExisting = window._maxSeqForPrefix(prefix, works);
+        const next = Math.max(counters[prefix] || 0, maxExisting) + 1;
+        counters[prefix] = next;
+        if (snap.exists()) tx.update(labRefA, { article_counters: counters });
+        else tx.set(labRefA, { article_counters: counters }, { merge: true });
+        usedPrefix = prefix; usedSeq = next;
+        article = prefix + String(next).padStart(2, '0');
+      });
+      // обновляем локальный кэш счётчиков (для корректного превью следующего артикула)
+      if (!window.LabDesk.labData) window.LabDesk.labData = {};
+      if (!window.LabDesk.labData.article_counters) window.LabDesk.labData.article_counters = {};
+      window.LabDesk.labData.article_counters[usedPrefix] = usedSeq;
       await addDoc(collection(db, 'work_types'), {
         lab_id: user.lab_id,
         article: article,
