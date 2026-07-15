@@ -8,7 +8,8 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Manrope',sans-serif;background:#F7F6F2;display:flex;align-items:center;justify-content:center;min-height:100vh;color:#1A1917;padding:20px}
-.card{background:#fff;border-radius:14px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 2px 24px rgba(0,0,0,.08)}
+.wrap{width:100%;max-width:420px}
+.card{background:#fff;border-radius:14px;padding:36px 32px;width:100%;box-shadow:0 2px 24px rgba(0,0,0,.08)}
 .logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
 .logo-icon{width:36px;height:36px;border-radius:8px;background:#534AB7;display:flex;align-items:center;justify-content:center}
 .logo-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
@@ -28,6 +29,8 @@ input:focus{border-color:#534AB7;background:#fff}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-ghost{background:transparent;color:#534AB7;border:1.5px solid rgba(83,74,183,.2)}
 .btn-ghost:hover{background:rgba(83,74,183,.06);opacity:1}
+.link{background:none;border:none;color:#534AB7;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:0;margin-top:10px;text-align:right;display:block;width:100%}
+.link:hover{text-decoration:underline}
 .err{background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;line-height:1.5}
 .err.show{display:block}
 .ok{background:#E8F5E9;color:#2E7D32;border-radius:8px;padding:12px 14px;font-size:13px;margin-top:12px;display:none;line-height:1.5}
@@ -37,10 +40,15 @@ input:focus{border-color:#534AB7;background:#fff}
 .hint{font-size:11px;color:#A8A7A3;margin-top:4px;line-height:1.4}
 .screen{display:none}
 .screen.active{display:block}
+.foot{text-align:center;margin-top:18px;font-size:12px;color:#A8A7A3;line-height:1.7}
+.foot a{color:#534AB7;text-decoration:none;font-weight:600}
+.foot a:hover{text-decoration:underline}
+.foot .sep{margin:0 6px;opacity:.5}
 </style>
 </head>
 <body>
 
+<div class="wrap">
 <div class="card">
   <div class="logo">
     <div class="logo-icon">
@@ -52,7 +60,7 @@ input:focus{border-color:#534AB7;background:#fff}
     </div>
   </div>
 
-  <div class="tabs">
+  <div class="tabs" id="tabs">
     <button class="tab active" id="tab-login" onclick="switchTab('login')">Вход</button>
     <button class="tab" id="tab-signup" onclick="switchTab('signup')">Регистрация</button>
   </div>
@@ -61,7 +69,6 @@ input:focus{border-color:#534AB7;background:#fff}
   <div class="screen active" id="screen-login">
     <h1>Вход в систему</h1>
     <p class="sub">Введите email и пароль для входа</p>
-
     <div class="field">
       <label>Email</label>
       <input type="email" id="login-email" placeholder="mail@example.com" autocomplete="email">
@@ -70,15 +77,14 @@ input:focus{border-color:#534AB7;background:#fff}
       <label>Пароль</label>
       <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
     </div>
-
     <button class="btn" id="btn-login" onclick="doLogin()">Войти</button>
+    <button class="link" onclick="showScreen('reset')">Забыли пароль?</button>
   </div>
 
   <!-- РЕГИСТРАЦИЯ -->
   <div class="screen" id="screen-signup">
     <h1>Регистрация лаборатории</h1>
     <p class="sub">Создайте аккаунт владельца лаборатории. Сотрудников и клиники-партнёров вы добавите потом из кабинета.</p>
-
     <div class="field">
       <label>Название лаборатории</label>
       <input type="text" id="su-lab-name" placeholder='ООО «ДентПро» / ИП Иванов И.И.'>
@@ -100,18 +106,44 @@ input:focus{border-color:#534AB7;background:#fff}
       <label>Повторите пароль</label>
       <input type="password" id="su-password2" placeholder="••••••••" autocomplete="new-password">
     </div>
-
     <button class="btn" id="btn-signup" onclick="doSignup()">Зарегистрироваться</button>
   </div>
 
   <!-- ВЕРИФИКАЦИЯ EMAIL -->
   <div class="screen" id="screen-verify">
     <h1>Подтвердите email</h1>
-    <p class="sub" id="verify-text">Мы отправили письмо со ссылкой подтверждения на ваш email. Перейдите по ссылке, затем вернитесь и нажмите «Я подтвердил».</p>
-
+    <p class="sub" id="verify-text">Мы отправили письмо со ссылкой подтверждения. Перейдите по ссылке, затем вернитесь и войдите.</p>
     <button class="btn" id="btn-verify-check" onclick="checkVerified()">Я подтвердил — войти</button>
     <button class="btn btn-ghost" id="btn-verify-resend" onclick="resendVerify()" style="margin-top:8px">Отправить письмо повторно</button>
-    <button class="btn btn-ghost" onclick="cancelVerify()" style="margin-top:8px">Назад</button>
+    <button class="btn btn-ghost" onclick="showScreen('login')" style="margin-top:8px">Назад ко входу</button>
+  </div>
+
+  <!-- ЗАПРОС СБРОСА ПАРОЛЯ -->
+  <div class="screen" id="screen-reset">
+    <h1>Восстановление пароля</h1>
+    <p class="sub">Укажите email аккаунта — вышлем ссылку для сброса пароля.</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="reset-email" placeholder="mail@example.com" autocomplete="email">
+    </div>
+    <button class="btn" id="btn-reset" onclick="doResetRequest()">Отправить ссылку</button>
+    <button class="btn btn-ghost" onclick="showScreen('login')" style="margin-top:8px">Назад ко входу</button>
+  </div>
+
+  <!-- УСТАНОВКА НОВОГО ПАРОЛЯ (после перехода по ссылке сброса) -->
+  <div class="screen" id="screen-newpass">
+    <h1>Новый пароль</h1>
+    <p class="sub">Придумайте новый пароль для входа.</p>
+    <div class="field">
+      <label>Новый пароль</label>
+      <input type="password" id="np-password" placeholder="минимум 6 символов" autocomplete="new-password">
+      <div class="hint">Минимум 6 символов</div>
+    </div>
+    <div class="field">
+      <label>Повторите пароль</label>
+      <input type="password" id="np-password2" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <button class="btn" id="btn-newpass" onclick="doSetNewPass()">Сохранить пароль</button>
   </div>
 
   <div class="err" id="err"></div>
@@ -119,47 +151,52 @@ input:focus{border-color:#534AB7;background:#fff}
   <div class="loading" id="loading">Подождите...</div>
 </div>
 
-<!-- Firebase SDK -->
+<div class="foot">
+  <a href="https://docs.google.com/document/d/1Tlw77JWjetIErcrYDNFesWMexzXeRt_UJOEdPafvFcg/edit?usp=sharing" target="_blank" rel="noopener">📘 Инструкция — как начать</a>
+  <div style="margin-top:6px">
+    <a href="https://t.me/nikolay_scom" target="_blank" rel="noopener">Telegram @nikolay_scom</a>
+    <span class="sep">·</span>
+    <a href="mailto:inf.scom@gmail.com">inf.scom@gmail.com</a>
+  </div>
+</div>
+</div>
+
+<!-- Supabase SDK -->
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, updateProfile, reload } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAGSWCDXmTCWo4teebNMhYl_9a8AtObt9o",
-  authDomain: "labdesk-e56c8.firebaseapp.com",
-  projectId: "labdesk-e56c8",
-  storageBucket: "labdesk-e56c8.firebasestorage.app",
-  messagingSenderId: "979876487209",
-  appId: "1:979876487209:web:7fd1642540d12318fafc38"
-};
+const SUPABASE_URL = 'https://api.lab-desk.ru';
+const SUPABASE_KEY = 'sb_publishable_GFD8ZESeMPX22sKCFLHuRg_WfTglggW';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+let pendingEmail = '';   // email, ожидающий подтверждения (для «отправить повторно»)
 
-// Авто-редирект если уже вошёл и email подтверждён
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-  if (!user.emailVerified) {
-    // Если email не подтверждён — показываем экран верификации
-    showScreen('verify');
-    document.getElementById('verify-text').textContent =
-      'Письмо со ссылкой подтверждения отправлено на ' + user.email + '. Перейдите по ссылке и нажмите «Я подтвердил».';
-    return;
+// ── Реакция на переход по ссылке восстановления пароля ──
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    document.getElementById('tabs').style.display = 'none';
+    showScreen('newpass');
   }
-  await redirectByRole(user.uid);
 });
 
-async function redirectByRole(uid) {
+// ── Авто-редирект, если уже вошёл ──
+(async function boot(){
+  const { data:{ session } } = await supabase.auth.getSession();
+  // если пришли по ссылке восстановления — не редиректим, покажем экран нового пароля
+  if (location.hash.includes('type=recovery')) return;
+  if (session && session.user) { redirectByRole(session.user.id); }
+})();
+
+async function redirectByRole(userId) {
   try {
-    const snap = await getDoc(doc(db, 'users', uid));
-    if (!snap.exists()) {
+    const { data, error } = await supabase
+      .from('profiles').select('role').eq('id', userId).single();
+    if (error || !data) {
       showErr('Профиль пользователя не найден. Обратитесь к администратору.');
-      await signOut(auth);
+      await supabase.auth.signOut();
       return;
     }
-    const role = snap.data().role;
+    const role = data.role;
     if (role === 'owner' || role === 'admin' || role === 'accountant') location.href = 'dentpro-lab.html';
     else if (role === 'clinic') location.href = 'stomat-clinic.html';
     else if (role === 'technician') location.href = 'dentpro-technician.html';
@@ -169,82 +206,58 @@ async function redirectByRole(uid) {
   }
 }
 
-function showErr(msg) {
-  document.getElementById('ok').classList.remove('show');
-  const el = document.getElementById('err');
-  el.textContent = msg;
-  el.classList.add('show');
-  document.getElementById('loading').classList.remove('show');
-  enableButtons(true);
-}
-function showOk(msg) {
-  document.getElementById('err').classList.remove('show');
-  const el = document.getElementById('ok');
-  el.textContent = msg;
-  el.classList.add('show');
-  document.getElementById('loading').classList.remove('show');
-  enableButtons(true);
-}
-function clearMsg(){
-  document.getElementById('err').classList.remove('show');
-  document.getElementById('ok').classList.remove('show');
-}
-function showLoading(text) {
-  clearMsg();
-  const el = document.getElementById('loading');
-  el.textContent = text || 'Подождите...';
-  el.classList.add('show');
-  enableButtons(false);
-}
-function enableButtons(on){
-  ['btn-login','btn-signup','btn-verify-check','btn-verify-resend'].forEach(id=>{
-    var b=document.getElementById(id); if(b) b.disabled=!on;
-  });
-}
+// ── Утилиты интерфейса ──
+function showErr(msg){ document.getElementById('ok').classList.remove('show'); const el=document.getElementById('err'); el.textContent=msg; el.classList.add('show'); document.getElementById('loading').classList.remove('show'); enableButtons(true); }
+function showOk(msg){ document.getElementById('err').classList.remove('show'); const el=document.getElementById('ok'); el.textContent=msg; el.classList.add('show'); document.getElementById('loading').classList.remove('show'); enableButtons(true); }
+function clearMsg(){ document.getElementById('err').classList.remove('show'); document.getElementById('ok').classList.remove('show'); }
+function showLoading(text){ clearMsg(); const el=document.getElementById('loading'); el.textContent=text||'Подождите...'; el.classList.add('show'); enableButtons(false); }
+function enableButtons(on){ ['btn-login','btn-signup','btn-verify-check','btn-verify-resend','btn-reset','btn-newpass'].forEach(id=>{ var b=document.getElementById(id); if(b) b.disabled=!on; }); }
 
-function showScreen(name){
+window.showScreen = function(name){
   clearMsg();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
   if(name==='login' || name==='signup'){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    var t = document.getElementById('tab-'+name);
-    if(t) t.classList.add('active');
+    var t=document.getElementById('tab-'+name); if(t) t.classList.add('active');
   }
-}
+};
 window.switchTab = function(name){ showScreen(name); };
 
+function mapAuthError(error){
+  const m = (error && error.message || '').toLowerCase();
+  if (m.includes('invalid login credentials')) return 'Неверный email или пароль';
+  if (m.includes('email not confirmed')) return 'Email не подтверждён. Проверьте почту или отправьте письмо повторно.';
+  if (m.includes('user already registered') || m.includes('already been registered')) return 'Этот email уже зарегистрирован. Войдите или используйте другой.';
+  if (m.includes('password should be at least')) return 'Пароль слишком короткий (минимум 6 символов).';
+  if (m.includes('rate limit') || m.includes('too many')) return 'Слишком много попыток. Попробуйте позже.';
+  if (m.includes('failed to fetch') || m.includes('network')) return 'Нет связи с сервером. Проверьте интернет.';
+  return (error && error.message) ? ('Ошибка: ' + error.message) : 'Произошла ошибка';
+}
+
 // ── ВХОД ──
-window.doLogin = async function() {
+window.doLogin = async function(){
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   if (!email || !password) { showErr('Введите email и пароль'); return; }
   showLoading('Выполняется вход...');
-  try {
-    const cred = await signInWithEmailAndPassword(auth, email, password);
-    if (!cred.user.emailVerified) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    if ((error.message||'').toLowerCase().includes('email not confirmed')) {
+      pendingEmail = email;
       showScreen('verify');
       document.getElementById('verify-text').textContent =
-        'Email ' + cred.user.email + ' не подтверждён. Откройте письмо со ссылкой подтверждения, или отправьте письмо повторно.';
-      clearMsg();
+        'Email ' + email + ' не подтверждён. Откройте письмо со ссылкой подтверждения или отправьте письмо повторно.';
       return;
     }
-    await redirectByRole(cred.user.uid);
-  } catch(e) {
-    const map = {
-      'auth/invalid-credential': 'Неверный email или пароль',
-      'auth/user-not-found': 'Пользователь не найден',
-      'auth/wrong-password': 'Неверный пароль',
-      'auth/invalid-email': 'Некорректный email',
-      'auth/too-many-requests': 'Слишком много попыток. Попробуйте позже.',
-      'auth/network-request-failed': 'Нет связи с сервером',
-    };
-    showErr(map[e.code] || ('Ошибка входа: ' + e.message));
+    showErr(mapAuthError(error));
+    return;
   }
+  await redirectByRole(data.user.id);
 };
 
 // ── РЕГИСТРАЦИЯ ──
-window.doSignup = async function() {
+window.doSignup = async function(){
   const labName = document.getElementById('su-lab-name').value.trim();
   const ownerName = document.getElementById('su-owner-name').value.trim();
   const email = document.getElementById('su-email').value.trim();
@@ -258,87 +271,66 @@ window.doSignup = async function() {
   if (password !== password2) { showErr('Пароли не совпадают'); return; }
 
   showLoading('Создаём аккаунт...');
-  try {
-    // 1. Создаём пользователя в Firebase Auth
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    const uid = cred.user.uid;
+  // lab_name и full_name уйдут в метаданные; лабораторию и профиль создаст триггер в БД.
+  const { data, error } = await supabase.auth.signUp({
+    email, password,
+    options: { data: { lab_name: labName, full_name: ownerName } }
+  });
+  if (error) { showErr(mapAuthError(error)); return; }
 
-    // 2. Обновляем displayName в Auth
-    try { await updateProfile(cred.user, { displayName: ownerName }); } catch(_){}
+  // Если авто-подтверждение включено — сразу есть сессия, входим.
+  if (data.session && data.user) { await redirectByRole(data.user.id); return; }
 
-    // 3. Создаём документ лаборатории (id = uid владельца — простой способ)
-    const labId = uid;
-    await setDoc(doc(db, 'labs', labId), {
-      name: labName,
-      owner_uid: uid,
-      created_at: serverTimestamp(),
-      order_counter: 1000,
-      act_counter: 0,
-      requisites: { name: labName, director: ownerName },
-    });
-
-    // 4. Создаём профиль пользователя
-    await setDoc(doc(db, 'users', uid), {
-      email: email,
-      full_name: ownerName,
-      role: 'owner',
-      lab_id: labId,
-      created_at: serverTimestamp(),
-    });
-
-    // 5. Отправляем письмо подтверждения
-    try { await sendEmailVerification(cred.user); } catch(_){}
-
-    // 6. Показываем экран верификации
-    showScreen('verify');
-    document.getElementById('verify-text').textContent =
-      'Письмо со ссылкой подтверждения отправлено на ' + email + '. Откройте письмо, перейдите по ссылке, затем вернитесь и нажмите «Я подтвердил».';
-    clearMsg();
-  } catch(e) {
-    const map = {
-      'auth/email-already-in-use': 'Этот email уже зарегистрирован. Войдите или используйте другой.',
-      'auth/invalid-email': 'Некорректный email',
-      'auth/weak-password': 'Пароль слишком простой (минимум 6 символов)',
-      'auth/network-request-failed': 'Нет связи с сервером',
-    };
-    showErr(map[e.code] || ('Ошибка регистрации: ' + e.message));
-  }
+  // Иначе — ждём подтверждения по email.
+  pendingEmail = email;
+  showScreen('verify');
+  document.getElementById('verify-text').textContent =
+    'Письмо со ссылкой подтверждения отправлено на ' + email + '. Откройте письмо, перейдите по ссылке, затем вернитесь и войдите.';
 };
 
 // ── ВЕРИФИКАЦИЯ ──
 window.checkVerified = async function(){
-  showLoading('Проверяем подтверждение...');
-  try {
-    if (!auth.currentUser) { showErr('Нет активной сессии. Войдите заново.'); showScreen('login'); return; }
-    await reload(auth.currentUser);
-    if (auth.currentUser.emailVerified) {
-      await redirectByRole(auth.currentUser.uid);
-    } else {
-      showErr('Email ещё не подтверждён. Проверьте почту (включая «Спам») и кликните по ссылке.');
-    }
-  } catch(e) {
-    showErr('Ошибка: ' + e.message);
-  }
+  showLoading('Проверяем...');
+  const { data:{ session } } = await supabase.auth.getSession();
+  if (session && session.user) { await redirectByRole(session.user.id); return; }
+  clearMsg();
+  showScreen('login');
+  showOk('Если email подтверждён — войдите с вашим паролем.');
 };
 
 window.resendVerify = async function(){
-  if (!auth.currentUser) { showErr('Нет активной сессии. Войдите заново.'); showScreen('login'); return; }
+  if (!pendingEmail) { showErr('Не удалось определить email. Войдите заново.'); showScreen('login'); return; }
   showLoading('Отправляем письмо...');
-  try {
-    await sendEmailVerification(auth.currentUser);
-    showOk('Письмо отправлено на ' + auth.currentUser.email + '. Проверьте почту (включая папку «Спам»).');
-  } catch(e) {
-    if (e.code === 'auth/too-many-requests') {
-      showErr('Слишком много отправок. Подождите несколько минут и попробуйте снова.');
-    } else {
-      showErr('Не удалось отправить: ' + e.message);
-    }
-  }
+  const { error } = await supabase.auth.resend({ type: 'signup', email: pendingEmail });
+  if (error) { showErr(mapAuthError(error)); return; }
+  showOk('Письмо отправлено на ' + pendingEmail + '. Проверьте почту (включая «Спам»).');
 };
 
-window.cancelVerify = async function(){
-  if (auth.currentUser) { try { await signOut(auth); } catch(_){} }
-  showScreen('login');
+// ── ЗАПРОС СБРОСА ПАРОЛЯ ──
+window.doResetRequest = async function(){
+  const email = document.getElementById('reset-email').value.trim();
+  if (!email) { showErr('Укажите email'); return; }
+  showLoading('Отправляем ссылку...');
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: location.origin + location.pathname
+  });
+  if (error) { showErr(mapAuthError(error)); return; }
+  showOk('Ссылка для сброса пароля отправлена на ' + email + '. Проверьте почту (включая «Спам»).');
+};
+
+// ── УСТАНОВКА НОВОГО ПАРОЛЯ ──
+window.doSetNewPass = async function(){
+  const p = document.getElementById('np-password').value;
+  const p2 = document.getElementById('np-password2').value;
+  if (p.length < 6) { showErr('Пароль должен быть не короче 6 символов'); return; }
+  if (p !== p2) { showErr('Пароли не совпадают'); return; }
+  showLoading('Сохраняем...');
+  const { error } = await supabase.auth.updateUser({ password: p });
+  if (error) { showErr(mapAuthError(error)); return; }
+  showOk('Пароль обновлён. Входим...');
+  const { data:{ session } } = await supabase.auth.getSession();
+  if (session && session.user) setTimeout(()=>redirectByRole(session.user.id), 800);
+  else showScreen('login');
 };
 </script>
 
